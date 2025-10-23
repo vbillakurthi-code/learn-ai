@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rural-IT-Hub Learning Platform</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for cart icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+        }
+        .hero-section {
+            background-image: url('images/pic05.jpg'); /* Placeholder image for hero */
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .btn-primary {
+            background-color: #3b82f6; /* Blue-600 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb; /* Blue-700 */
+        }
+        .btn-secondary {
+            background-color: #e2e8f0; /* Gray-200 */
+            color: #334155; /* Slate-700 */
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .btn-secondary:hover {
+            background-color: #cbd5e1; /* Gray-300 */
+        }
+        /* Shopping Cart Sidebar Styles */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            max-width: 400px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 100;
+        }
+        .cart-sidebar.open {
+            transform: translateX(0);
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 99;
+            display: none;
+        }
+        .overlay.open {
+            display: block;
+        }
+        /* Category filter button active state */
+        .category-btn.active {
+            background-color: #2563eb; /* Darker blue for active state */
+            color: white;
+        }
+        /* Modal styles */
+        .modal {
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md p-4 sticky top-0 z-50 rounded-b-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-blue-700">Rural-IT-Hub Learning Platform</a>
+            <div class="hidden md:flex space-x-6 items-center">
+                <a href="#home" class="text-gray-700 hover:text-blue-600 font-medium rounded-md p-2">Home</a>
+                <a href="#courses" class="text-gray-700 hover:text-blue-600 font-medium rounded-md p-2">Courses</a>
+                <a href="#about" class="text-gray-700 hover:text-blue-600 font-medium rounded-md p-2">About Us</a>
+                <a href="#contact" class="text-gray-700 hover:text-blue-600 font-medium rounded-md p-2">Contact</a>
+                <div id="auth-buttons" class="flex space-x-2">
+                    <button id="login-btn" class="btn-secondary text-sm px-4 py-2">Login</button>
+                    <button id="register-btn" class="btn-primary text-sm px-4 py-2">Register</button>
+                </div>
+                <div id="user-menu" class="hidden flex items-center space-x-2">
+                    <span id="user-name" class="text-gray-700 font-medium"></span>
+                    <button id="logout-btn" class="btn-secondary text-sm px-4 py-2">Logout</button>
+                </div>
+                <button id="cart-button" class="relative text-gray-700 hover:text-blue-600 focus:outline-none ml-4">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                </button>
+            </div>
+            <div class="md:hidden flex items-center">
+                <!-- Mobile menu button (Hamburger icon) -->
+                <button id="mobile-menu-button" class="text-gray-700 focus:outline-none focus:text-blue-600 mr-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <button id="cart-button-mobile" class="relative text-gray-700 hover:text-blue-600 focus:outline-none">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                    <span id="cart-count-mobile" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white mt-2 rounded-lg shadow-lg">
+            <a href="#home" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-md">Home</a>
+            <a href="#courses" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-md">Courses</a>
+            <a href="#about" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-md">About Us</a>
+            <a href="#contact" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-md">Contact</a>
+            <div id="mobile-auth-buttons" class="flex space-x-2 p-4">
+                <button id="mobile-login-btn" class="btn-secondary text-sm px-4 py-2 flex-1">Login</button>
+                <button id="mobile-register-btn" class="btn-primary text-sm px-4 py-2 flex-1">Register</button>
+            </div>
+            <div id="mobile-user-menu" class="hidden p-4">
+                <span id="mobile-user-name" class="text-gray-700 font-medium block mb-2"></span>
+                <button id="mobile-logout-btn" class="btn-secondary text-sm px-4 py-2 w-full">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section py-20 md:py-32 text-center rounded-b-lg mb-8">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight">Empowering Rural Communities with IT/AI Skills</h1>
+            <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto">Bridging the digital divide by providing accessible and high-quality IT/AI education to rural areas.</p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="#courses" class="btn-primary inline-block rounded-lg shadow-lg hover:shadow-xl">Explore Courses</a>
+                <a href="#about" class="btn-secondary inline-block rounded-lg shadow-lg hover:shadow-xl">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section id="courses" class="py-16 bg-white rounded-lg shadow-md mx-4 md:mx-auto max-w-6xl mb-8">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12">Our Popular IT/AI Courses</h2>
+
+            <!-- Category Filter Buttons -->
+            <div class="flex flex-wrap justify-center gap-4 mb-12">
+                <button class="category-btn btn-secondary px-6 py-2 rounded-full font-semibold active" data-category="all">All Courses</button>
+                <button class="category-btn btn-secondary px-6 py-2 rounded-full font-semibold" data-category="essentials">Computer Essentials</button>
+                <button class="category-btn btn-secondary px-6 py-2 rounded-full font-semibold" data-category="data-science">Data Science/ML</button>
+                <button class="category-btn btn-secondary px-6 py-2 rounded-full font-semibold" data-category="productivity">Productivity</button>
+                <button class="category-btn btn-secondary px-6 py-2 rounded-full font-semibold" data-category="genai">GenAI</button>
+            </div>
+
+            <div id="course-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Course Card 1 -->
+                <div class="course-card bg-blue-50 p-6 rounded-xl shadow-lg card" data-category="essentials">
+                    <img src="https://placehold.co/400x250/a78bfa/ffffff?text=Web+Development" alt="Computer Essentials in AI World" class="rounded-lg mb-4 w-full h-40 object-cover">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Computer Essentials in AI World</h3>
+                    <p class="text-gray-700 mb-4">AI relies on a robust ecosystem of specialized software for development, training, and deployment. Introduction to Hardware, Software, Tools and Models </p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-blue-600 font-bold">$99.99</span>
+                        <button class="add-to-cart-btn btn-primary text-sm rounded-md" data-course-id="1" data-course-name="Computer Essentials in AI World" data-course-price="99.99">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Course Card 2 -->
+                <div class="course-card bg-blue-50 p-6 rounded-xl shadow-lg card" data-category="data-science">
+                    <img src="https://placehold.co/400x250/fcd34d/ffffff?text=Data Analysis+with+Python" alt="Data Analysis with Python" class="rounded-lg mb-4 w-full h-40 object-cover">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Data Analysis with Python</h3>
+                    <p class="text-gray-700 mb-4">This introduce fundamental programming concepts including data structures, networked application program interfaces, and databases, using the Python programming language. Master Python, Pandas, NumPy, and Matplotlib for data manipulation, analysis, and visualization.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-blue-600 font-bold">$99.99</span>
+                        <button class="add-to-cart-btn btn-primary text-sm rounded-md" data-course-id="2" data-course-name="Data Analysis with Python" data-course-price="99.99">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Course Card 3 -->
+                <div class="course-card bg-blue-50 p-6 rounded-xl shadow-lg card" data-category="genai">
+                    <img src="https://placehold.co/400x250/93c5fd/ffffff?text=Generative+AI+Essentials" alt="Generative AI Essentials" class="rounded-lg mb-4 w-full h-40 object-cover">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Generative AI Essentials</h3>
+                    <p class="text-gray-700 mb-4">Learn how generative AI works, explore the benefits and drawbacks of generative AI and learn how generative AI can integrate into our daily lives</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-blue-600 font-bold">$49.99</span>
+                        <button class="add-to-cart-btn btn-primary text-sm rounded-md" data-course-id="5" data-course-name="Generative AI Essentials" data-course-price="49.99">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Course Card 4 -->
+                <div class="course-card bg-blue-50 p-6 rounded-xl shadow-lg card" data-category="productivity">
+                    <img src="https://placehold.co/400x250/c4b5fd/ffffff?text=Office+Productivity+Tools" alt="Office Productivity Course" class="rounded-lg mb-4 w-full h-40 object-cover">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Office Productivity Tools</h3>
+                    <p class="text-gray-700 mb-4">You will learn how to work more collaboratively and more effectively using a suite of productivity-enhancing applications. Master Microsoft Office Suite (Word, Excel, PowerPoint) and Google Workspace for daily tasks.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-blue-600 font-bold">$99.99</span>
+                        <button class="add-to-cart-btn btn-primary text-sm rounded-md" data-course-id="6" data-course-name="Office Productivity Tools" data-course-price="99.99">Add to Cart</button>
+                    </div>
+                </div>
+                <!-- Course Card 5 -->
+                <div class="course-card bg-blue-50 p-6 rounded-xl shadow-lg card" data-category="genai">
+                    <img src="https://placehold.co/400x250/93c5fd/ffffff?text=AI+Machine+Learning" alt="AI & Machine Learning" class="rounded-lg mb-4 w-full h-40 object-cover">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">AI & Machine Learning</h3>
+                    <p class="text-gray-700 mb-4">Get hands-on training in Python, Gen-AI, and Agentic Frameworks. Build ML models with NumPy & scikit-learn, build & train supervised models for prediction & binary classification tasks (linear, logistic regression)</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-blue-600 font-bold">$49.99</span>
+                        <button class="add-to-cart-btn btn-primary text-sm rounded-md" data-course-id="5" data-course-name="AI & Machine Learning" data-course-price="49.99">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Course Card 6 -->
+                <div class="course-card bg-blue-50 p-6 rounded-xl shadow-lg card" data-category="essentials">
+                    <img src="https://placehold.co/400x250/c4b5fd/ffffff?text=AI+Productivity+Tools" alt="AI Productivity Tools" class="rounded-lg mb-4 w-full h-40 object-cover">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">AI Productivity Tools</h3>
+                    <p class="text-gray-700 mb-4">In the AI world, productivity tools leverage machine learning and automation to help individuals and businesses complete tasks faster and more efficiently. These tools are augmenting human creativity, not replacing it, by taking over repetitive work across a wide range of fields, including writing, project management, data analysis, and marketing.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-blue-600 font-bold">$99.99</span>
+                        <button class="add-to-cart-btn btn-primary text-sm rounded-md" data-course-id="6" data-course-name="AI Productivity Tools" data-course-price="99.99">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-12">
+                <a href="#" class="btn-primary inline-block text-lg rounded-lg shadow-lg hover:shadow-xl">View All Courses</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="py-16 bg-blue-100 rounded-lg shadow-md mx-4 md:mx-auto max-w-6xl mb-8">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row items-center gap-8">
+            <div class="md:w-1/2">
+                <img src="https://placehold.co/600x400/93c5fd/ffffff?text=Our+Mission" alt="Our Mission" class="rounded-xl shadow-lg w-full h-auto">
+            </div>
+            <div class="md:w-1/2">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-6">About Rural IT Skills</h2>
+                <p class="text-gray-700 mb-4 text-lg">
+                    Our mission is to empower individuals in rural areas by providing them with essential IT/AI skills. We believe that access to quality education should not be limited by geographical location.
+                </p>
+                <p class="text-gray-700 mb-4 text-lg">
+                    We offer a wide range of courses, from foundational computer literacy to advanced programming and data science, all tailored to be accessible and relevant for rural communities. Our experienced instructors and flexible learning modules ensure a supportive and effective learning environment.
+                </p>
+                <a href="#contact" class="btn-primary inline-block rounded-lg shadow-lg hover:shadow-xl">Contact Us</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 bg-blue-50 rounded-lg shadow-md mx-4 md:mx-auto max-w-6xl mb-8">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-8">Get in Touch</h2>
+            <p class="text-lg text-gray-700 mb-8 max-w-2xl mx-auto">Have questions about our courses or how we can help your community? Reach out to us!</p>
+            <form class="max-w-xl mx-auto bg-white p-8 rounded-xl shadow-lg">
+                <div class="mb-6">
+                    <input type="text" id="name" name="name" placeholder="Your Name" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required>
+                </div>
+                <div class="mb-6">
+                    <input type="email" id="email" name="email" placeholder="Your Email" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required>
+                </div>
+                <div class="mb-6">
+                    <textarea id="message" name="message" rows="5" placeholder="Your Message" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required></textarea>
+                </div>
+                <button type="submit" class="btn-primary w-full rounded-lg shadow-lg hover:shadow-xl">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 rounded-t-lg">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-400">&copy; 2025 Rural-IT-Hub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Shopping Cart Sidebar -->
+    <div id="cart-sidebar" class="cart-sidebar p-6 flex flex-col">
+        <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+            <h3 class="text-2xl font-bold text-gray-800">Your Cart</h3>
+            <button id="close-cart-button" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+        </div>
+        <div id="cart-items-container" class="flex-grow overflow-y-auto">
+            <!-- Cart items will be dynamically added here -->
+            <p id="empty-cart-message" class="text-gray-600 text-center mt-8">Your cart is empty.</p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-gray-200">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-xl font-semibold text-gray-800">Total:</span>
+                <span id="cart-total" class="text-xl font-bold text-blue-600">$0.00</span>
+            </div>
+            <button id="checkout-button" class="btn-primary w-full text-lg rounded-lg shadow-lg hover:shadow-xl">Proceed to Enrollment</button>
+        </div>
+    </div>
+
+    <!-- Overlay for sidebar -->
+    <div id="overlay" class="overlay"></div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md mx-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Login</h2>
+            <form id="login-form">
+                <div class="mb-4">
+                    <input type="email" id="login-email" placeholder="Email" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required>
+                </div>
+                <div class="mb-6">
+                    <input type="password" id="login-password" placeholder="Password" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required>
+                </div>
+                <div class="mb-4 p-3 bg-blue-50 rounded-md border border-blue-200">
+                    <p class="text-sm text-blue-700 font-medium mb-1">Demo Credentials:</p>
+                    <p class="text-xs text-blue-600">Email: demo@rural-it-hub.com</p>
+                    <p class="text-xs text-blue-600">Password: demo123</p>
+                </div>
+                <button type="submit" class="btn-primary w-full mb-4">Login</button>
+                <button type="button" id="close-login" class="btn-secondary w-full">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Registration Modal -->
+    <div id="register-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md mx-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Register</h2>
+            <form id="register-form">
+                <div class="mb-4">
+                    <input type="text" id="register-name" placeholder="Full Name" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <input type="email" id="register-email" placeholder="Email" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required>
+                </div>
+                <div class="mb-6">
+                    <input type="password" id="register-password" placeholder="Password" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required>
+                </div>
+                <button type="submit" class="btn-primary w-full mb-4">Register</button>
+                <button type="button" id="close-register" class="btn-secondary w-full">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when a link is clicked
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Shopping Cart Logic
+        const cartButton = document.getElementById('cart-button');
+        const cartButtonMobile = document.getElementById('cart-button-mobile');
+        const cartSidebar = document.getElementById('cart-sidebar');
+        const closeCartButton = document.getElementById('close-cart-button');
+        const overlay = document.getElementById('overlay');
+        const cartItemsContainer = document.getElementById('cart-items-container');
+        const cartTotalSpan = document.getElementById('cart-total');
+        const cartCountSpans = document.querySelectorAll('[id^="cart-count"]'); // Select both desktop and mobile cart counts
+        const emptyCartMessage = document.getElementById('empty-cart-message');
+        const checkoutButton = document.getElementById('checkout-button');
+
+        let cart = []; // Array to store cart items
+
+        // Function to open the cart sidebar
+        function openCart() {
+            cartSidebar.classList.add('open');
+            overlay.classList.add('open');
+        }
+
+        // Function to close the cart sidebar
+        function closeCart() {
+            cartSidebar.classList.remove('open');
+            overlay.classList.remove('open');
+        }
+
+        // Add event listeners for opening and closing cart
+        cartButton.addEventListener('click', openCart);
+        cartButtonMobile.addEventListener('click', openCart);
+        closeCartButton.addEventListener('click', closeCart);
+        overlay.addEventListener('click', closeCart); // Close cart when clicking outside
+
+        // Function to update cart display
+        function updateCartDisplay() {
+            cartItemsContainer.innerHTML = ''; // Clear current items
+            let total = 0;
+
+            if (cart.length === 0) {
+                emptyCartMessage.style.display = 'block';
+            } else {
+                emptyCartMessage.style.display = 'none';
+                cart.forEach(item => {
+                    const cartItemDiv = document.createElement('div');
+                    cartItemDiv.classList.add('flex', 'justify-between', 'items-center', 'py-3', 'border-b', 'border-gray-100');
+                    cartItemDiv.innerHTML = `
+                        <span class="text-gray-800 font-medium">${item.name}</span>
+                        <div class="flex items-center">
+                            <span class="text-gray-700 mr-4">$${item.price.toFixed(2)}</span>
+                            <button class="remove-from-cart-btn text-red-500 hover:text-red-700 focus:outline-none" data-course-id="${item.id}">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(cartItemDiv);
+                    total += item.price;
+                });
+            }
+
+            cartTotalSpan.textContent = `$${total.toFixed(2)}`;
+            cartCountSpans.forEach(span => {
+                span.textContent = cart.length;
+            });
+        }
+
+        // Function to add item to cart
+        function addToCart(course) {
+            // Check if the course is already in the cart
+            const existingCourse = cart.find(item => item.id === course.id);
+            if (!existingCourse) {
+                cart.push(course);
+                updateCartDisplay();
+            } else {
+                // Optionally, you can show a message that the item is already in the cart
+                console.log(`${course.name} is already in the cart.`);
+            }
+        }
+
+        // Function to remove item from cart
+        function removeFromCart(courseId) {
+            cart = cart.filter(item => item.id !== courseId);
+            updateCartDisplay();
+        }
+
+        // Add event listeners to "Add to Cart" buttons
+        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const courseId = e.target.dataset.courseId;
+                const courseName = e.target.dataset.courseName;
+                const coursePrice = parseFloat(e.target.dataset.coursePrice);
+
+                const course = {
+                    id: courseId,
+                    name: courseName,
+                    price: coursePrice
+                };
+                addToCart(course);
+                openCart(); // Open cart automatically when an item is added
+            });
+        });
+
+        // Add event listener for removing items from cart (delegation)
+        cartItemsContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-from-cart-btn') || e.target.closest('.remove-from-cart-btn')) {
+                const button = e.target.closest('.remove-from-cart-btn');
+                const courseId = button.dataset.courseId;
+                removeFromCart(courseId);
+            }
+        });
+
+        // Checkout button functionality
+        checkoutButton.addEventListener('click', () => {
+            if (cart.length > 0) {
+                // In a real application, this would redirect to a checkout page
+                // or initiate a payment process.
+                alert('Proceeding to enrollment for your selected courses! (This is a placeholder action)');
+                cart = []; // Clear cart after "checkout"
+                updateCartDisplay();
+                closeCart();
+            } else {
+                alert('Your cart is empty. Please add courses before proceeding to enrollment.');
+            }
+        });
+
+        // Course Category Filtering Logic
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const courseCards = document.querySelectorAll('.course-card');
+
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to the clicked button
+                button.classList.add('active');
+
+                const selectedCategory = button.dataset.category;
+
+                courseCards.forEach(card => {
+                    const cardCategory = card.dataset.category;
+                    if (selectedCategory === 'all' || cardCategory === selectedCategory) {
+                        card.style.display = 'block'; // Show the card
+                    } else {
+                        card.style.display = 'none'; // Hide the card
+                    }
+                });
+            });
+        });
+
+        // Initial cart display update
+        updateCartDisplay();
+
+        // Authentication System
+        const loginModal = document.getElementById('login-modal');
+        const registerModal = document.getElementById('register-modal');
+        const authButtons = document.getElementById('auth-buttons');
+        const userMenu = document.getElementById('user-menu');
+        const mobileAuthButtons = document.getElementById('mobile-auth-buttons');
+        const mobileUserMenu = document.getElementById('mobile-user-menu');
+
+        // Initialize demo user if no users exist
+        initializeDemoUser();
+        
+        // Check if user is logged in on page load
+        checkAuthStatus();
+        
+        function initializeDemoUser() {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const demoExists = users.find(u => u.email === 'demo@rural-it-hub.com');
+            
+            if (!demoExists) {
+                const demoUser = {
+                    name: 'Demo User',
+                    email: 'demo@rural-it-hub.com',
+                    password: 'demo123'
+                };
+                users.push(demoUser);
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+        }
+
+        // Modal controls
+        document.getElementById('login-btn').addEventListener('click', () => loginModal.classList.remove('hidden'));
+        document.getElementById('mobile-login-btn').addEventListener('click', () => loginModal.classList.remove('hidden'));
+        document.getElementById('register-btn').addEventListener('click', () => registerModal.classList.remove('hidden'));
+        document.getElementById('mobile-register-btn').addEventListener('click', () => registerModal.classList.remove('hidden'));
+        document.getElementById('close-login').addEventListener('click', () => loginModal.classList.add('hidden'));
+        document.getElementById('close-register').addEventListener('click', () => registerModal.classList.add('hidden'));
+
+        // Login form
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                loginModal.classList.add('hidden');
+                checkAuthStatus();
+                window.location.href = 'learning-platform.html';
+            } else {
+                alert('Invalid email or password');
+            }
+        });
+
+        // Registration form
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            if (users.find(u => u.email === email)) {
+                alert('Email already registered');
+                return;
+            }
+            
+            const newUser = { name, email, password };
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            
+            registerModal.classList.add('hidden');
+            checkAuthStatus();
+            alert('Registration successful!');
+        });
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', logout);
+        document.getElementById('mobile-logout-btn').addEventListener('click', logout);
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            checkAuthStatus();
+            alert('Logged out successfully!');
+        }
+
+        function checkAuthStatus() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            
+            if (currentUser) {
+                authButtons.classList.add('hidden');
+                userMenu.classList.remove('hidden');
+                mobileAuthButtons.classList.add('hidden');
+                mobileUserMenu.classList.remove('hidden');
+                document.getElementById('user-name').textContent = currentUser.name;
+                document.getElementById('mobile-user-name').textContent = currentUser.name;
+            } else {
+                authButtons.classList.remove('hidden');
+                userMenu.classList.add('hidden');
+                mobileAuthButtons.classList.remove('hidden');
+                mobileUserMenu.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

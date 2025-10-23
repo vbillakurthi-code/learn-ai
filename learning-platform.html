@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rural-IT-Hub Learning Platform</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom styles for Inter font and general theme */
+        :root {
+            --primary: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f97316;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        /* Custom scrollbar for better aesthetics */
+        .scrollable-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .scrollable-content::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.5);
+            border-radius: 4px;
+        }
+        .scrollable-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        /* Style for the Code Editor to match VS Code light theme */
+        #editor {
+            min-height: 300px;
+            background-color: #fff;
+            color: #383a42;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            border: 1px solid #e5e7eb;
+            resize: none;
+        }
+        /* Style for the Output Console */
+        #output {
+            min-height: 100px;
+            background-color: #1f2937;
+            color: #d1d5db;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        /* Style for admin forms */
+        .admin-form input, .admin-form select {
+            border: 1px solid #d1d5db;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#4f46e5',
+                        'secondary': '#10b981',
+                        'accent': '#f97316',
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen flex flex-col lg:flex-row">
+    
+    <!-- Main Application Container -->
+    <div id="mainAppContainer" class="min-h-screen flex flex-col lg:flex-row w-full">
+        
+        <!-- Navigation (Sidebar on Desktop, Top Bar on Mobile) -->
+        <nav id="sidebar" class="bg-primary text-white p-4 lg:w-64 flex-shrink-0 z-20">
+            <div class="flex justify-between items-center lg:block">
+                <h1 class="text-2xl font-bold mb-6 text-indigo-200">Rural-IT-Hub Learning Platform</h1>
+                <button id="menuToggle" class="lg:hidden p-2 rounded-lg hover:bg-indigo-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+
+            <ul id="menuList" class="space-y-2 hidden lg:block transition-all duration-300">
+                <!-- Navigation Items - Mapped to view IDs -->
+                <li class="nav-item" id="homePageNav"><a href="#" class="flex items-center p-3 rounded-xl hover:bg-indigo-600 transition duration-150"><i data-lucide="home" class="w-5 h-5 mr-3"></i>Home Page</a></li>
+                <li class="nav-item" data-view="dashboardView"><a href="#" class="flex items-center p-3 rounded-xl hover:bg-indigo-600 transition duration-150"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>Dashboard</a></li>
+                <li class="nav-item" data-view="sessionsView"><a href="#" class="flex items-center p-3 rounded-xl hover:bg-indigo-600 transition duration-150"><i data-lucide="calendar-check" class="w-5 h-5 mr-3"></i>Session Details</a></li>
+                <li class="nav-item" data-view="materialView"><a href="#" class="flex items-center p-3 rounded-xl hover:bg-indigo-600 transition duration-150"><i data-lucide="book-open-text" class="w-5 h-5 mr-3"></i>Study Material</a></li>
+                <li class="nav-item" data-view="recordingsView"><a href="#" class="flex items-center p-3 rounded-xl hover:bg-indigo-600 transition duration-150"><i data-lucide="monitor-play" class="w-5 h-5 mr-3"></i>Session Recordings</a></li>
+                <li class="nav-item" data-view="attendanceView"><a href="#" class="flex items-center p-3 rounded-xl hover:bg-indigo-600 transition duration-150"><i data-lucide="clipboard-list" class="w-5 h-5 mr-3"></i>Attendance</a></li>
+                <li class="nav-item" data-view="assessmentsView"><a href="#" class="flex items-center p-3 rounded-xl hover:bg-indigo-600 transition duration-150"><i data-lucide="graduation-cap" class="w-5 h-5 mr-3"></i>Assessments</a></li>
+                <li class="nav-item" data-view="certificationView"><a href="#" class="flex items-center p-3 rounded-xl hover:bg-indigo-600 transition duration-150"><i data-lucide="award" class="w-5 h-5 mr-3"></i>Certifications</a></li>
+                <li class="nav-item" data-view="coursesView"><a href="#" class="flex items-center p-3 rounded-xl hover:bg-indigo-600 transition duration-150"><i data-lucide="book" class="w-5 h-5 mr-3"></i>Courses</a></li>
+                <li class="nav-item" data-view="codeRunnerView"><a href="#" class="flex items-center p-3 rounded-xl hover:bg-indigo-600 transition duration-150 bg-indigo-700 font-semibold mt-4"><i data-lucide="terminal" class="w-5 h-5 mr-3"></i>Run My Code</a></li>
+                <li class="nav-item" data-view="microlearningView"><a href="#" class="flex items-center p-3 rounded-xl hover:bg-indigo-600 transition duration-150 bg-indigo-700 font-semibold mt-4"><i data-lucide="terminal" class="w-5 h-5 mr-3"></i>Micro Learning</a></li>
+                
+                <!-- NEW: Admin Panel -->
+                <li class="nav-item hidden" data-view="adminView" id="adminNav"><a href="#" class="flex items-center p-3 rounded-xl bg-red-600 hover:bg-red-700 transition duration-150 font-semibold mt-4"><i data-lucide="shield" class="w-5 h-5 mr-3"></i>Admin Panel</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main id="content" class="flex-grow p-4 md:p-8 overflow-y-auto scrollable-content">
+
+            <!-- Header -->
+            <header class="flex justify-between items-center mb-8">
+                <div class="flex flex-col">
+                    <span class="text-lg font-semibold text-gray-800">Rural-IT-Hub Learning Platform</span>
+                    <span class="text-sm text-gray-500">Welcome to your learning dashboard</span>
+                </div>
+            </header>
+
+            <!-- Dynamic Content Views -->
+
+            <!-- 1. Dashboard View (Kept simple, uses static/mock stats for now) -->
+            <section id="dashboardView" class="view hidden">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Dashboard Overview</h2>
+                <p class="text-lg text-gray-600 mb-8">Welcome back! Here's a summary of your progress.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100"><div class="flex items-center space-x-4"><i data-lucide="clock" class="w-8 h-8 text-primary"></i><div><p class="text-sm text-gray-500">Total Hours</p><p class="text-2xl font-semibold text-gray-800">45<span class="text-base font-normal"> hrs</span></p></div></div></div>
+                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100"><div class="flex items-center space-x-4"><i data-lucide="check-circle" class="w-8 h-8 text-secondary"></i><div><p class="text-sm text-gray-500">Completion Rate</p><p class="text-2xl font-semibold text-gray-800">85<span class="text-base font-normal">%</span></p></div></div></div>
+                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100"><div class="flex items-center space-x-4"><i data-lucide="trending-up" class="w-8 h-8 text-accent"></i><div><p class="text-sm text-gray-500">Average Score</p><p class="text-2xl font-semibold text-gray-800">92<span class="text-base font-normal">/100</span></p></div></div></div>
+                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100"><div class="flex items-center space-x-4"><i data-lucide="award" class="w-8 h-8 text-indigo-400"></i><div><p class="text-sm text-gray-500">Certifications</p><p class="text-2xl font-semibold text-gray-800">1 / 3</p></div></div></div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-xl border border-gray-100">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center"><i data-lucide="zap" class="w-5 h-5 text-primary mr-2"></i>Next Session</h3>
+                        <div id="nextSessionDisplay">Loading next session...</div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-2xl shadow-xl border border-gray-100">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center"><i data-lucide="book" class="w-5 h-5 text-secondary mr-2"></i>Available Courses</h3>
+                        <div id="dashboardCourseList" class="space-y-3">Loading courses...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Session Details View (Dynamic) -->
+            <section id="sessionsView" class="view hidden">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Upcoming Session Details</h2>
+                <div id="session-list" class="space-y-4">
+                    <!-- Session data will be dynamically rendered here -->
+                    <p class="text-gray-500">Loading sessions...</p>
+                </div>
+            </section>
+
+            <!-- 3. Study Material View (Dynamic + AI) -->
+            <section id="materialView" class="view hidden">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Study Material Library</h2>
+                <div id="material-list" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                     <!-- Material data will be dynamically rendered here -->
+                     <p class="text-gray-500 col-span-full">Loading materials...</p>
+                </div>
+                
+                <!-- AI Study Tools Section -->
+                <div class="bg-white p-6 rounded-2xl shadow-xl border border-gray-100 mt-8">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center"><i data-lucide="brain-circuit" class="w-5 h-5 text-accent mr-2"></i>AI Study Tools</h3>
+                    <label for="studyInput" class="block text-md font-medium text-gray-700 mb-2">Paste Your Notes or Text:</label>
+                    <textarea id="studyInput" class="w-full h-32 p-3 mb-4 border border-gray-300 rounded-xl focus:ring-accent focus:border-accent transition" placeholder="Paste a large block of text from your lecture notes here..."></textarea>
+                    
+                    <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mb-4">
+                        <button id="summarizeBtn" class="bg-accent text-white px-6 py-3 rounded-xl hover:bg-orange-600 transition font-semibold shadow-md flex items-center justify-center">
+                            <i data-lucide="zap" class="w-5 h-5 mr-2"></i> ✨ Summarize & Key Points
+                        </button>
+                        <button id="ttsBtn" disabled class="bg-indigo-400 text-white px-6 py-3 rounded-xl transition font-semibold shadow-md flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
+                            <i data-lucide="volume-2" class="w-5 h-5 mr-2"></i> ✨ Read Summary Aloud
+                        </button>
+                    </div>
+
+                    <label for="summaryOutput" class="block text-md font-medium text-gray-700 mt-6 mb-2">AI Summary:</label>
+                    <div id="summaryOutput" class="min-h-[100px] bg-gray-50 p-4 rounded-xl text-gray-700 whitespace-pre-wrap border border-gray-200">
+                        The summary of your notes will appear here after you click the 'Summarize' button.
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Session Recordings View (Dynamic) -->
+            <section id="recordingsView" class="view hidden">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Session Recordings</h2>
+                <div id="recording-list" class="space-y-4">
+                    <!-- Recording data will be dynamically rendered here -->
+                    <p class="text-gray-500">Loading recordings...</p>
+                </div>
+            </section>
+
+            <!-- 5. Attendance View (Kept static for now, focus on content management) -->
+            <section id="attendanceView" class="view hidden">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Attendance Record</h2>
+                <div class="bg-white p-6 rounded-2xl shadow-xl overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Session</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Intro to Data Science</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Oct 10, 2025</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center"><span class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full bg-secondary/20 text-secondary">Present</span></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">60 min</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Python Testing Basics</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Oct 12, 2025</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center"><span class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-700">Absent</span></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">0 min</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="mt-4 text-sm text-gray-500">Overall Attendance Rate: 78%</p>
+            </section>
+
+            <!-- 6. Assessments View (Dynamic) -->
+            <section id="assessmentsView" class="view hidden">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Your Assessment Results</h2>
+                <div id="assessment-list" class="space-y-6">
+                    <!-- Assessment data will be dynamically rendered here -->
+                    <p class="text-gray-500">Loading assessments...</p>
+                </div>
+            </section>
+
+            <!-- 7. Certification View (Dynamic) -->
+            <section id="certificationView" class="view hidden">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Your Certifications</h2>
+                <div id="certification-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Certification data will be dynamically rendered here -->
+                    <p class="text-gray-500 col-span-full">Loading certifications...</p>
+                </div>
+            </section>
+
+            <!-- 7.1. Courses View (Dynamic) -->
+            <section id="coursesView" class="view hidden">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Available Courses</h2>
+                <div id="course-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Course data will be dynamically rendered here -->
+                    <p class="text-gray-500 col-span-full">Loading courses...</p>
+                </div>
+            </section>
+
+            <!-- 8. Code Runner View (AI Feature) -->
+            <section id="codeRunnerView" class="view hidden">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Run My Code Sandbox</h2>
+                <div class="bg-white p-6 rounded-2xl shadow-xl">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Language:</label>
+                        <select id="languageSelect" class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="javascript">JavaScript</option>
+                            <option value="python">Python</option>
+                        </select>
+                    </div>
+                    <label for="editor" class="block text-lg font-medium text-gray-700 mb-2">Write Code Here:</label>
+                    <textarea id="editor" class="w-full" placeholder="console.log('Hello, World!');\nfunction greet(name) {\n  return 'Hello, ' + name;\n}\nconsole.log(greet('Rural-IT-Hub'));">console.log('Hello, World from Rural-IT-Hub!');
+// You can write any JavaScript code here to test it.
+
+function calculateBMI(weightKg, heightM) {
+  return weightKg / (heightM * heightM);
+}
+
+let bmi = calculateBMI(70, 1.75);
+console.log('Your BMI is:', bmi.toFixed(2));</textarea>
+
+                    <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mt-4">
+                        <button id="runCodeBtn" class="bg-secondary text-white px-6 py-3 rounded-xl hover:bg-emerald-600 transition font-semibold shadow-md flex items-center justify-center">
+                            <i data-lucide="play" class="w-5 h-5 mr-2"></i> Run Code
+                        </button>
+                        <button id="reviewCodeBtn" class="bg-primary text-white px-6 py-3 rounded-xl hover:bg-indigo-600 transition font-semibold shadow-md flex items-center justify-center">
+                            <i data-lucide="lightbulb" class="w-5 h-5 mr-2"></i> ✨ Ask for Tutor Review
+                        </button>
+                    </div>
+
+                    <label for="output" class="block text-lg font-medium text-gray-700 mt-6 mb-2">Output Console:</label>
+                    <pre id="output" class="w-full">Click 'Run Code' to see the output...</pre>
+                    
+                    <label for="reviewOutput" class="block text-lg font-medium text-gray-700 mt-6 mb-2">AI Code Review:</label>
+                    <pre id="reviewOutput" class="w-full min-h-[100px] bg-indigo-50 p-4 rounded-xl border border-indigo-200 text-gray-800 whitespace-pre-wrap">The AI Tutor's review (suggestions, explanation, best practices) will appear here after you click the 'Tutor Review' button.</pre>
+                </div>
+            </section>
+
+            <!-- 9. NEW: Admin View (CRUD Management) -->
+            <section id="adminView" class="view hidden">
+                <h2 class="text-3xl font-bold text-red-600 mb-6 flex items-center"><i data-lucide="shield" class="w-7 h-7 mr-2"></i> Admin Panel: Content Management</h2>
+                <p class="text-lg text-gray-600 mb-6">Manage the public content used across the platform. Changes are reflected in real-time.</p>
+
+                <div class="bg-white p-6 rounded-2xl shadow-xl border border-gray-100">
+                    <!-- Admin Tabs -->
+                    <div class="flex border-b mb-6 overflow-x-auto">
+                        <button class="admin-tab p-3 text-sm md:text-base font-medium text-primary border-b-2 border-primary mr-4 transition" data-target="manageSessions">Sessions</button>
+                        <button class="admin-tab p-3 text-sm md:text-base font-medium text-gray-500 hover:text-primary border-b-2 border-transparent hover:border-primary mr-4 transition" data-target="manageMaterials">Materials</button>
+                        <button class="admin-tab p-3 text-sm md:text-base font-medium text-gray-500 hover:text-primary border-b-2 border-transparent hover:border-primary mr-4 transition" data-target="manageRecordings">Recordings</button>
+                        <button class="admin-tab p-3 text-sm md:text-base font-medium text-gray-500 hover:text-primary border-b-2 border-transparent hover:border-primary mr-4 transition" data-target="manageAssessments">Assessments</button>
+                        <button class="admin-tab p-3 text-sm md:text-base font-medium text-gray-500 hover:text-primary border-b-2 border-transparent hover:border-primary mr-4 transition" data-target="manageAttendance">Attendance</button>
+                        <button class="admin-tab p-3 text-sm md:text-base font-medium text-gray-500 hover:text-primary border-b-2 border-transparent hover:border-primary mr-4 transition" data-target="manageCertifications">Certifications</button>
+                        <button class="admin-tab p-3 text-sm md:text-base font-medium text-gray-500 hover:text-primary border-b-2 border-transparent hover:border-primary transition" data-target="manageCourses">Courses</button>
+                    </div>
+                    
+                    <!-- Admin Tab Content -->
+                    <div id="adminContent">
+                        
+                        <!-- Manage Sessions -->
+                        <div id="manageSessions" class="admin-tab-content">
+                            <h3 class="text-xl font-semibold mb-4 text-primary">Add New Session</h3>
+                            <form id="addSessionForm" class="admin-form grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input type="text" id="sessionTitle" placeholder="Session Title (e.g., Advanced JavaScript)" required>
+                                <input type="text" id="sessionInstructor" placeholder="Instructor Name" required>
+                                <input type="date" id="sessionDate" required>
+                                <input type="time" id="sessionTime" required>
+                                <button type="submit" class="md:col-span-2 bg-primary text-white p-3 rounded-xl hover:bg-indigo-600 transition font-semibold flex items-center justify-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Add Session</button>
+                            </form>
+
+                            <h3 class="text-xl font-semibold mt-8 mb-4 text-gray-800 border-t pt-4">Current Sessions</h3>
+                            <div id="adminSessionList" class="space-y-4">
+                                <p class="text-gray-500">Loading management data...</p>
+                            </div>
+                        </div>
+
+                        <!-- Manage Materials -->
+                        <div id="manageMaterials" class="admin-tab-content hidden">
+                            <h3 class="text-xl font-semibold mb-4 text-primary">Add New Study Material</h3>
+                            <form id="addMaterialForm" class="admin-form grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <input type="text" id="materialName" placeholder="Material Name (e.g., Module 3: State Management)" required>
+                                <select id="materialType" required>
+                                    <option value="">Select Type</option>
+                                    <option value="PDF">PDF</option>
+                                    <option value="Code">Code Examples</option>
+                                    <option value="Link">External Link</option>
+                                </select>
+                                <input type="url" id="materialLink" placeholder="Download/View Link (URL)" required>
+                                <button type="submit" class="md:col-span-3 bg-primary text-white p-3 rounded-xl hover:bg-indigo-600 transition font-semibold flex items-center justify-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Add Material</button>
+                            </form>
+
+                            <h3 class="text-xl font-semibold mt-8 mb-4 text-gray-800 border-t pt-4">Current Materials</h3>
+                            <div id="adminMaterialList" class="space-y-4"></div>
+                        </div>
+
+                        <!-- Manage Recordings -->
+                        <div id="manageRecordings" class="admin-tab-content hidden">
+                            <h3 class="text-xl font-semibold mb-4 text-primary">Add New Recording</h3>
+                            <form id="addRecordingForm" class="admin-form grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <input type="text" id="recordingTitle" placeholder="Recording Title (e.g., Lecture 7: CSS Grid)" required>
+                                <input type="date" id="recordingDate" required>
+                                <input type="text" id="recordingDuration" placeholder="Duration (e.g., 1h 15m)" required>
+                                <button type="submit" class="md:col-span-3 bg-primary text-white p-3 rounded-xl hover:bg-indigo-600 transition font-semibold flex items-center justify-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Add Recording</button>
+                            </form>
+
+                            <h3 class="text-xl font-semibold mt-8 mb-4 text-gray-800 border-t pt-4">Current Recordings</h3>
+                            <div id="adminRecordingList" class="space-y-4"></div>
+                        </div>
+
+                        <!-- Manage Assessments -->
+                        <div id="manageAssessments" class="admin-tab-content hidden">
+                            <h3 class="text-xl font-semibold mb-4 text-primary">Add New Assessment</h3>
+                            <form id="addAssessmentForm" class="admin-form grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <input type="text" id="assessmentName" placeholder="Assessment Name (e.g., Quiz 2: Git)" required>
+                                <input type="text" id="assessmentType" placeholder="Type (e.g., Quiz, Project)" required>
+                                <input type="date" id="assessmentDueDate" required>
+                                <button type="submit" class="md:col-span-3 bg-primary text-white p-3 rounded-xl hover:bg-indigo-600 transition font-semibold flex items-center justify-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Add Assessment</button>
+                            </form>
+
+                            <h3 class="text-xl font-semibold mt-8 mb-4 text-gray-800 border-t pt-4">Current Assessments</h3>
+                            <div id="adminAssessmentList" class="space-y-4"></div>
+                        </div>
+                        
+                        <!-- Manage Attendance -->
+                        <div id="manageAttendance" class="admin-tab-content hidden">
+                            <h3 class="text-xl font-semibold mb-4 text-primary">Add Attendance Record</h3>
+                            <form id="addAttendanceForm" class="admin-form grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <input type="text" id="attendanceStudent" placeholder="Student Name" required>
+                                <input type="text" id="attendanceSession" placeholder="Session Name" required>
+                                <input type="date" id="attendanceDate" required>
+                                <select id="attendanceStatus" required>
+                                    <option value="">Select Status</option>
+                                    <option value="Present">Present</option>
+                                    <option value="Absent">Absent</option>
+                                    <option value="Late">Late</option>
+                                </select>
+                                <button type="submit" class="md:col-span-4 bg-primary text-white p-3 rounded-xl hover:bg-indigo-600 transition font-semibold flex items-center justify-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Add Attendance Record</button>
+                            </form>
+
+                            <h3 class="text-xl font-semibold mt-8 mb-4 text-gray-800 border-t pt-4">Attendance Records</h3>
+                            <div id="adminAttendanceList" class="space-y-4"></div>
+                        </div>
+
+                        <!-- Manage Certifications -->
+                        <div id="manageCertifications" class="admin-tab-content hidden">
+                            <h3 class="text-xl font-semibold mb-4 text-primary">Add New Certification</h3>
+                            <form id="addCertificationForm" class="admin-form grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <input type="text" id="certName" placeholder="Certification Name" required>
+                                <input type="text" id="certStatus" placeholder="Status (e.g., Awarded, In Progress)" required>
+                                <input type="number" id="certProgress" placeholder="Progress (%)" min="0" max="100" required>
+                                <button type="submit" class="md:col-span-3 bg-primary text-white p-3 rounded-xl hover:bg-indigo-600 transition font-semibold flex items-center justify-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Add Certification</button>
+                            </form>
+
+                            <h3 class="text-xl font-semibold mt-8 mb-4 text-gray-800 border-t pt-4">Current Certifications</h3>
+                            <div id="adminCertificationList" class="space-y-4"></div>
+                        </div>
+
+                        <!-- Manage Courses -->
+                        <div id="manageCourses" class="admin-tab-content hidden">
+                            <h3 class="text-xl font-semibold mb-4 text-primary">Add New Course</h3>
+                            <form id="addCourseForm" class="admin-form grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <input type="text" id="courseName" placeholder="Course Name" required>
+                                <input type="text" id="courseInstructor" placeholder="Instructor" required>
+                                <input type="text" id="courseDuration" placeholder="Duration (e.g., 8 weeks)" required>
+                                <button type="submit" class="md:col-span-3 bg-primary text-white p-3 rounded-xl hover:bg-indigo-600 transition font-semibold flex items-center justify-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Add Course</button>
+                            </form>
+
+                            <h3 class="text-xl font-semibold mt-8 mb-4 text-gray-800 border-t pt-4">Current Courses</h3>
+                            <div id="adminCourseList" class="space-y-4"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+            <!-- 10. Micro Learning View (Dynamic) -->
+            <section id="microlearningView" class="view hidden">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Micro Learning</h2>
+                
+                <!-- Web URL Selection Section -->
+                <div class="bg-white p-6 rounded-2xl shadow-xl border border-gray-100 mb-8">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                        <i data-lucide="globe" class="w-5 h-5 text-primary mr-2"></i>Access Learning Resources
+                    </h3>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <select id="urlSelect" class="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-primary focus:border-primary transition">
+                            <option value="">Select a learning resource...</option>
+                            <option value="www.ruralithub.net/Learn/Micro-Learning/index.html">Rural-IT-Hub Micro-Learning</option>
+                            <option value="https://colab.research.google.com/">Google Colab</option>
+                            <option value="https://www.tutorialspoint.com/whiteboard.htm">Whiteboard</option>
+                        </select>
+                        <button id="loadUrlBtn" class="bg-primary text-white px-6 py-3 rounded-xl hover:bg-indigo-600 transition font-semibold flex items-center justify-center">
+                            <i data-lucide="external-link" class="w-5 h-5 mr-2"></i>Load Resource
+                        </button>
+                    </div>
+                </div>
+
+                <!-- URL Display Section -->
+                <div id="urlDisplaySection" class="bg-white p-6 rounded-2xl shadow-xl border border-gray-100 mb-8 hidden">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                        <i data-lucide="monitor" class="w-5 h-5 text-secondary mr-2"></i>Learning Content
+                    </h3>
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                        <iframe id="webFrame" class="w-full h-96 border-0 rounded-lg" src="" title="Learning Content"></iframe>
+                    </div>
+                    <div class="mt-4 flex justify-between items-center">
+                        <span id="currentUrl" class="text-sm text-gray-600"></span>
+                        <button id="openInNewTab" class="text-primary hover:text-indigo-600 font-semibold flex items-center">
+                            <i data-lucide="external-link" class="w-4 h-4 mr-1"></i>Open in New Tab
+                        </button>
+                    </div>
+                </div>
+
+                <div id="microlearning-list" class="space-y-4">
+                    <!-- Micro learning content will be dynamically rendered here -->
+                    <p class="text-gray-500">Enter a web URL above to access learning resources, or browse the content below.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Message Box for Alerts (Replaces alert()) -->
+    <div id="messageBox" class="fixed bottom-4 right-4 z-50 transition-all duration-300 transform translate-x-full">
+        <div class="bg-red-600 text-white p-4 rounded-lg shadow-xl flex items-center space-x-3">
+            <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+            <span id="messageText" class="font-medium"></span>
+        </div>
+    </div>
+
+    <script>
+        // --- Global Variables ---
+        let userRole = 'admin'; // Default role (no authentication needed)
+        let mockData = {
+            sessions: [],
+            materials: [],
+            recordings: [],
+            assessments: [],
+            certifications: [],
+            attendance: [],
+            courses: []
+        };
+
+        // --- UI Elements ---
+        const views = document.querySelectorAll('.view');
+        const navItems = document.querySelectorAll('.nav-item');
+        const menuToggle = document.getElementById('menuToggle');
+        const menuList = document.getElementById('menuList');
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
+
+        // LLM & Study Material Elements
+        const studyInput = document.getElementById('studyInput');
+        const summarizeBtn = document.getElementById('summarizeBtn');
+        const summaryOutput = document.getElementById('summaryOutput');
+        const ttsBtn = document.getElementById('ttsBtn');
+        let audioPlayer = null; 
+
+        // Admin UI Elements
+        const adminNav = document.getElementById('adminNav');
+        const adminTabs = document.querySelectorAll('.admin-tab');
+        const adminContent = document.getElementById('adminContent');
+
+        // Admin List Containers (For Admin Panel and Main Views)
+        const adminSessionList = document.getElementById('adminSessionList');
+        const sessionList = document.getElementById('session-list');
+        const nextSessionDisplay = document.getElementById('nextSessionDisplay');
+
+        const adminMaterialList = document.getElementById('adminMaterialList');
+        const materialList = document.getElementById('material-list');
+
+        const adminRecordingList = document.getElementById('adminRecordingList');
+        const recordingList = document.getElementById('recording-list');
+
+        const adminAssessmentList = document.getElementById('adminAssessmentList');
+        const assessmentList = document.getElementById('assessment-list');
+
+        const adminCertificationList = document.getElementById('adminCertificationList');
+        const certificationList = document.getElementById('certification-list');
+
+        const adminCourseList = document.getElementById('adminCourseList');
+        const courseList = document.getElementById('course-list');
+        const dashboardCourseList = document.getElementById('dashboardCourseList');
+
+        const adminAttendanceList = document.getElementById('adminAttendanceList');
+
+
+
+        // Global API settings
+        const GEMINI_TEXT_MODEL = "gemini-2.5-flash-preview-09-2025";
+        const GEMINI_TTS_MODEL = "gemini-2.5-flash-preview-tts";
+        const apiKey = ""; // Leave as-is
+
+        // --- Mock Data Utilities ---
+        function generateId() {
+            return Date.now().toString() + Math.random().toString(36).substr(2, 9);
+        }
+
+
+        // --- Utility Functions ---
+
+        /**
+         * Shows a transient message box instead of using alert().
+         */
+        function showMessage(message, type = 'info') {
+            let bgColor = 'bg-primary';
+            let icon = 'info';
+            switch (type) {
+                case 'error': bgColor = 'bg-red-600'; icon = 'alert-triangle'; break;
+                case 'success': bgColor = 'bg-secondary'; icon = 'check-circle'; break;
+                case 'info': default: bgColor = 'bg-primary'; icon = 'info'; break;
+            }
+            const currentIcon = messageBox.querySelector('i[data-lucide]');
+            if (currentIcon) {
+                currentIcon.outerHTML = `<i data-lucide="${icon}" class="w-6 h-6"></i>`;
+                lucide.createIcons();
+            }
+            messageBox.className = `fixed bottom-4 right-4 z-50 transition-all duration-300 transform ${bgColor} text-white p-4 rounded-lg shadow-xl flex items-center space-x-3`;
+            messageText.textContent = message;
+            messageBox.classList.remove('translate-x-full');
+            setTimeout(() => {
+                messageBox.classList.add('translate-x-full');
+            }, 4000);
+        }
+
+        /**
+         * Switches the active view/section in the main app.
+         */
+        function switchView(viewId) {
+            views.forEach(view => view.classList.add('hidden'));
+            const targetView = document.getElementById(viewId);
+            if (targetView) targetView.classList.remove('hidden');
+
+            navItems.forEach(item => {
+                item.querySelector('a').classList.remove('bg-indigo-700', 'font-semibold', 'bg-red-700');
+                if (item.getAttribute('data-view') === viewId) {
+                    const link = item.querySelector('a');
+                    link.classList.add('font-semibold');
+                    if (viewId === 'adminView') {
+                        link.classList.add('bg-red-700');
+                    } else {
+                        link.classList.add('bg-indigo-700');
+                    }
+                }
+            });
+
+            if (window.innerWidth < 1024) menuList.classList.add('hidden');
+        }
+
+        // --- Initialization ---
+        function initializeApp() {
+            // Show admin panel by default
+            adminNav.classList.remove('hidden');
+            setupDataListeners();
+            switchView('dashboardView');
+            showMessage('Welcome to the Learning Platform!', 'success');
+        }
+        
+        // --- Admin UI Handlers ---
+
+        function handleAdminTabClick(e) {
+            adminTabs.forEach(btn => {
+                btn.classList.remove('text-primary', 'border-primary');
+                btn.classList.add('text-gray-500', 'border-transparent', 'hover:text-primary', 'hover:border-primary');
+            });
+
+            e.target.classList.add('text-primary', 'border-primary');
+            e.target.classList.remove('text-gray-500', 'border-transparent', 'hover:text-primary', 'hover:border-primary');
+
+            document.querySelectorAll('.admin-tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            const targetId = e.target.getAttribute('data-target');
+            document.getElementById(targetId).classList.remove('hidden');
+        }
+
+        // --- Firestore Rendering Functions (Client-facing) ---
+
+        function renderSessions(docs) {
+            sessionList.innerHTML = '';
+            adminSessionList.innerHTML = '';
+            nextSessionDisplay.innerHTML = '<p class="text-gray-500">No upcoming sessions.</p>';
+            
+            if (docs.length === 0) {
+                sessionList.innerHTML = '<p class="text-gray-500">No sessions scheduled yet.</p>';
+                return;
+            }
+
+            // Sort by date (in-memory sort)
+            docs.sort((a, b) => new Date(a.date + ' ' + a.time) - new Date(b.date + ' ' + b.time));
+
+            // Set the Next Session on Dashboard
+            const nextSession = docs[0];
+            const nextDate = new Date(nextSession.date).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+            
+            nextSessionDisplay.innerHTML = `
+                <div class="md:flex md:justify-between md:items-center">
+                    <div>
+                        <p class="text-2xl font-bold text-gray-900">${nextSession.title}</p>
+                        <p class="text-gray-500 mt-1">Instructor: ${nextSession.instructor}</p>
+                    </div>
+                    <div class="mt-4 md:mt-0 md:text-right">
+                        <p class="text-xl font-semibold text-accent">${nextDate}</p>
+                        <p class="text-gray-600">${nextSession.time} (Local Time)</p>
+                        <button class="mt-3 bg-secondary text-white px-4 py-2 rounded-xl hover:bg-emerald-600 transition duration-150 shadow-md">Join Live Session</button>
+                    </div>
+                </div>
+            `;
+
+            // Render all sessions in Session View and Admin List
+            docs.forEach(session => {
+                const color = session.date < new Date().toISOString().split('T')[0] ? 'border-gray-400' : 'border-primary';
+                const date = new Date(session.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                
+                // Client View HTML
+                sessionList.innerHTML += `
+                    <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 ${color}">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-800">${session.title}</h3>
+                                <p class="text-gray-600 mt-1">Instructor: ${session.instructor}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-lg font-bold text-primary">${date}</p>
+                                <p class="text-sm text-gray-500">${session.time}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Admin View HTML
+                adminSessionList.innerHTML += `
+                    <div class="bg-gray-50 p-4 rounded-xl flex justify-between items-center border border-gray-200">
+                        <div>
+                            <p class="font-semibold text-gray-800">${session.title} (${session.instructor})</p>
+                            <p class="text-sm text-gray-600">${date} at ${session.time}</p>
+                        </div>
+                        <button onclick="deleteDocument('sessions', '${session.id}')" class="text-red-500 hover:text-red-700 p-2 rounded-full transition">
+                            <i data-lucide="trash-2" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        function renderMaterials(docs) {
+            materialList.innerHTML = '';
+            adminMaterialList.innerHTML = '';
+            
+            if (docs.length === 0) {
+                materialList.innerHTML = '<p class="text-gray-500 col-span-full">No study materials available yet.</p>';
+                return;
+            }
+
+            docs.forEach(material => {
+                let icon, color, buttonText;
+                switch(material.type) {
+                    case 'PDF': icon = 'file-text'; color = 'primary'; buttonText = 'Download PDF'; break;
+                    case 'Code': icon = 'code'; color = 'accent'; buttonText = 'Download Code'; break;
+                    case 'Link': icon = 'book-open'; color = 'secondary'; buttonText = 'Go to Link'; break;
+                    default: icon = 'file'; color = 'gray-500'; buttonText = 'View'; break;
+                }
+
+                // Client View HTML
+                materialList.innerHTML += `
+                    <div class="bg-white p-6 rounded-2xl shadow-md flex flex-col items-center text-center">
+                        <i data-lucide="${icon}" class="w-10 h-10 text-${color} mb-3"></i>
+                        <p class="font-semibold text-lg">${material.name}</p>
+                        <p class="text-sm text-gray-500 mb-4">${material.type} Document</p>
+                        <a href="${material.link}" target="_blank" class="w-full bg-${color} text-white py-2 rounded-xl hover:bg-${color}/80 transition">${buttonText}</a>
+                    </div>
+                `;
+
+                // Admin View HTML
+                adminMaterialList.innerHTML += `
+                    <div class="bg-gray-50 p-4 rounded-xl flex justify-between items-center border border-gray-200">
+                        <div>
+                            <p class="font-semibold text-gray-800">${material.name} (${material.type})</p>
+                            <a href="${material.link}" target="_blank" class="text-sm text-blue-500 hover:underline">${material.link.substring(0, 40)}...</a>
+                        </div>
+                        <button onclick="deleteDocument('materials', '${material.id}')" class="text-red-500 hover:text-red-700 p-2 rounded-full transition">
+                            <i data-lucide="trash-2" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+        
+        function renderRecordings(docs) {
+            recordingList.innerHTML = '';
+            adminRecordingList.innerHTML = '';
+
+            if (docs.length === 0) {
+                recordingList.innerHTML = '<p class="text-gray-500">No recordings uploaded yet.</p>';
+                return;
+            }
+
+            docs.forEach(recording => {
+                const date = new Date(recording.date).toLocaleDateString();
+                // Client View HTML
+                recordingList.innerHTML += `
+                    <div class="bg-white p-4 rounded-2xl shadow-md flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <i data-lucide="play-circle" class="w-6 h-6 text-primary"></i>
+                            <div>
+                                <p class="font-medium text-gray-800">${recording.title}</p>
+                                <p class="text-sm text-gray-500">Recorded on ${date} (${recording.duration})</p>
+                            </div>
+                        </div>
+                        <button class="text-primary hover:text-indigo-600 font-semibold flex items-center">
+                            Watch Now <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+                        </button>
+                    </div>
+                `;
+
+                // Admin View HTML
+                adminRecordingList.innerHTML += `
+                    <div class="bg-gray-50 p-4 rounded-xl flex justify-between items-center border border-gray-200">
+                        <div>
+                            <p class="font-semibold text-gray-800">${recording.title}</p>
+                            <p class="text-sm text-gray-600">${date} (${recording.duration})</p>
+                        </div>
+                        <button onclick="deleteDocument('recordings', '${recording.id}')" class="text-red-500 hover:text-red-700 p-2 rounded-full transition">
+                            <i data-lucide="trash-2" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        function renderAssessments(docs) {
+            assessmentList.innerHTML = '';
+            adminAssessmentList.innerHTML = '';
+
+            if (docs.length === 0) {
+                assessmentList.innerHTML = '<p class="text-gray-500">No assessments found.</p>';
+                return;
+            }
+
+            docs.forEach(assessment => {
+                const dueDate = new Date(assessment.dueDate).toLocaleDateString();
+                // Mock result/status for client view
+                const isPending = Math.random() < 0.5;
+                const resultText = isPending ? 'Pending' : '95%';
+                const resultColor = isPending ? 'text-red-600' : 'text-secondary';
+                const buttonText = isPending ? 'Start Submission' : 'View Feedback';
+                const buttonColor = isPending ? 'bg-red-500' : 'text-primary border border-primary';
+                const hoverColor = isPending ? 'hover:bg-red-600' : 'hover:bg-primary hover:text-white';
+                
+                // Client View HTML
+                assessmentList.innerHTML += `
+                    <div class="bg-white p-6 rounded-2xl shadow-md flex justify-between items-center">
+                        <div>
+                            <p class="text-xl font-semibold text-gray-800">${assessment.name} (${assessment.type})</p>
+                            <p class="text-sm text-gray-500 mt-1">Due: ${dueDate}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-3xl font-bold ${resultColor}">${resultText}</p>
+                            <button class="mt-2 ${buttonColor} text-white px-4 py-2 rounded-xl ${hoverColor} transition">${buttonText}</button>
+                        </div>
+                    </div>
+                `;
+
+                // Admin View HTML
+                adminAssessmentList.innerHTML += `
+                    <div class="bg-gray-50 p-4 rounded-xl flex justify-between items-center border border-gray-200">
+                        <div>
+                            <p class="font-semibold text-gray-800">${assessment.name} (${assessment.type})</p>
+                            <p class="text-sm text-gray-600">Due Date: ${dueDate}</p>
+                        </div>
+                        <button onclick="deleteDocument('assessments', '${assessment.id}')" class="text-red-500 hover:text-red-700 p-2 rounded-full transition">
+                            <i data-lucide="trash-2" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        function renderAttendance(docs) {
+            adminAttendanceList.innerHTML = '';
+
+            if (docs.length === 0) {
+                adminAttendanceList.innerHTML = '<p class="text-gray-500">No attendance records found.</p>';
+                return;
+            }
+
+            docs.forEach(record => {
+                const date = new Date(record.date).toLocaleDateString();
+                const statusColor = record.status === 'Present' ? 'text-green-600' : 
+                                  record.status === 'Late' ? 'text-yellow-600' : 'text-red-600';
+                const statusBg = record.status === 'Present' ? 'bg-green-100' : 
+                               record.status === 'Late' ? 'bg-yellow-100' : 'bg-red-100';
+
+                adminAttendanceList.innerHTML += `
+                    <div class="bg-gray-50 p-4 rounded-xl flex justify-between items-center border border-gray-200">
+                        <div>
+                            <p class="font-semibold text-gray-800">${record.student} - ${record.session}</p>
+                            <p class="text-sm text-gray-600">${date}</p>
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${statusBg} ${statusColor}">${record.status}</span>
+                        </div>
+                        <button onclick="deleteDocument('attendance', '${record.id}')" class="text-red-500 hover:text-red-700 p-2 rounded-full transition">
+                            <i data-lucide="trash-2" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        function renderCertifications(docs) {
+            certificationList.innerHTML = '';
+            adminCertificationList.innerHTML = '';
+
+            if (docs.length === 0) {
+                certificationList.innerHTML = '<p class="text-gray-500 col-span-full">No certifications in progress or awarded yet.</p>';
+                return;
+            }
+
+            docs.forEach(cert => {
+                const isAwarded = cert.status === 'Awarded';
+                const color = isAwarded ? 'border-yellow-500' : 'border-gray-400';
+                const badgeColor = isAwarded ? 'text-yellow-500' : 'text-gray-400';
+                const buttonBg = isAwarded ? 'bg-yellow-500' : 'bg-gray-200';
+                const buttonText = isAwarded ? 'Download Certificate' : 'View Requirements';
+                const buttonTextColor = isAwarded ? 'text-white' : 'text-gray-800';
+
+                // Client View HTML
+                certificationList.innerHTML += `
+                    <div class="bg-white p-6 rounded-2xl shadow-xl border-l-8 ${color}">
+                        <div class="flex items-center space-x-4">
+                            <i data-lucide="${isAwarded ? 'certificate' : 'loader-2'}" class="w-10 h-10 ${badgeColor} ${!isAwarded ? 'animate-spin' : ''}"></i>
+                            <div>
+                                <p class="text-lg font-semibold text-gray-800">${cert.name}</p>
+                                <p class="text-sm text-gray-500">${cert.status}: ${cert.progress}% Complete</p>
+                            </div>
+                        </div>
+                        <button class="mt-4 w-full ${buttonBg} ${buttonTextColor} py-2 rounded-xl hover:bg-${isAwarded ? 'yellow-600' : 'gray-300'} transition flex items-center justify-center">
+                            <i data-lucide="${isAwarded ? 'download' : 'check-square'}" class="w-4 h-4 mr-2"></i> ${buttonText}
+                        </button>
+                    </div>
+                `;
+
+                // Admin View HTML
+                adminCertificationList.innerHTML += `
+                    <div class="bg-gray-50 p-4 rounded-xl flex justify-between items-center border border-gray-200">
+                        <div>
+                            <p class="font-semibold text-gray-800">${cert.name}</p>
+                            <p class="text-sm text-gray-600">Status: ${cert.status} (${cert.progress}%)</p>
+                        </div>
+                        <button onclick="deleteDocument('certifications', '${cert.id}')" class="text-red-500 hover:text-red-700 p-2 rounded-full transition">
+                            <i data-lucide="trash-2" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        function renderCourses(docs) {
+            courseList.innerHTML = '';
+            adminCourseList.innerHTML = '';
+            dashboardCourseList.innerHTML = '';
+
+            if (docs.length === 0) {
+                courseList.innerHTML = '<p class="text-gray-500 col-span-full">No courses available yet.</p>';
+                dashboardCourseList.innerHTML = '<p class="text-gray-500">No courses available yet.</p>';
+                return;
+            }
+
+            docs.forEach(course => {
+                // Client View HTML
+                courseList.innerHTML += `
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <i data-lucide="book" class="w-8 h-8 text-primary"></i>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-800">${course.name}</h3>
+                                <p class="text-sm text-gray-500">by ${course.instructor}</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-4">Duration: ${course.duration}</p>
+                        <button class="w-full bg-primary text-white py-2 rounded-xl hover:bg-indigo-600 transition">Enroll Now</button>
+                    </div>
+                `;
+
+                // Dashboard View HTML (compact)
+                dashboardCourseList.innerHTML += `
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div>
+                            <p class="font-medium text-gray-800">${course.name}</p>
+                            <p class="text-sm text-gray-500">${course.instructor} • ${course.duration}</p>
+                        </div>
+                        <button class="text-primary hover:text-indigo-600 font-semibold text-sm">View</button>
+                    </div>
+                `;
+
+                // Admin View HTML
+                adminCourseList.innerHTML += `
+                    <div class="bg-gray-50 p-4 rounded-xl flex justify-between items-center border border-gray-200">
+                        <div>
+                            <p class="font-semibold text-gray-800">${course.name}</p>
+                            <p class="text-sm text-gray-600">Instructor: ${course.instructor} | Duration: ${course.duration}</p>
+                        </div>
+                        <button onclick="deleteDocument('courses', '${course.id}')" class="text-red-500 hover:text-red-700 p-2 rounded-full transition">
+                            <i data-lucide="trash-2" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+
+        // --- Mock Data Listeners Setup ---
+        function setupDataListeners() {
+            // Render initial data
+            renderSessions(mockData.sessions);
+            renderMaterials(mockData.materials);
+            renderRecordings(mockData.recordings);
+            renderAssessments(mockData.assessments);
+            renderCertifications(mockData.certifications);
+            renderCourses(mockData.courses);
+            renderAttendance(mockData.attendance);
+        }
+
+        // --- Mock Data CRUD Handlers ---
+        window.deleteDocument = function (collectionName, docId) {
+            const index = mockData[collectionName].findIndex(item => item.id === docId);
+            if (index > -1) {
+                mockData[collectionName].splice(index, 1);
+                setupDataListeners(); // Re-render
+                showMessage(`${collectionName.slice(0, -1)} deleted successfully!`, 'success');
+            }
+        }
+
+        // --- Form Submission Handlers ---
+        function handleAddSession(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = {
+                id: generateId(),
+                title: form.sessionTitle.value,
+                instructor: form.sessionInstructor.value,
+                date: form.sessionDate.value,
+                time: form.sessionTime.value,
+            };
+            mockData.sessions.push(data);
+            setupDataListeners();
+            showMessage('Session added successfully!', 'success');
+            form.reset();
+        }
+
+        function handleAddMaterial(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = {
+                id: generateId(),
+                name: form.materialName.value,
+                type: form.materialType.value,
+                link: form.materialLink.value,
+            };
+            mockData.materials.push(data);
+            setupDataListeners();
+            showMessage('Material added successfully!', 'success');
+            form.reset();
+        }
+
+        function handleAddRecording(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = {
+                id: generateId(),
+                title: form.recordingTitle.value,
+                date: form.recordingDate.value,
+                duration: form.recordingDuration.value,
+            };
+            mockData.recordings.push(data);
+            setupDataListeners();
+            showMessage('Recording added successfully!', 'success');
+            form.reset();
+        }
+
+        function handleAddAssessment(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = {
+                id: generateId(),
+                name: form.assessmentName.value,
+                type: form.assessmentType.value,
+                dueDate: form.assessmentDueDate.value,
+            };
+            mockData.assessments.push(data);
+            setupDataListeners();
+            showMessage('Assessment added successfully!', 'success');
+            form.reset();
+        }
+
+        function handleAddAttendance(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = {
+                id: generateId(),
+                student: form.attendanceStudent.value,
+                session: form.attendanceSession.value,
+                date: form.attendanceDate.value,
+                status: form.attendanceStatus.value,
+            };
+            mockData.attendance.push(data);
+            setupDataListeners();
+            showMessage('Attendance record added successfully!', 'success');
+            form.reset();
+        }
+
+        function handleAddCertification(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = {
+                id: generateId(),
+                name: form.certName.value,
+                status: form.certStatus.value,
+                progress: parseInt(form.certProgress.value, 10),
+            };
+            mockData.certifications.push(data);
+            setupDataListeners();
+            showMessage('Certification added successfully!', 'success');
+            form.reset();
+        }
+
+        function handleAddCourse(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = {
+                id: generateId(),
+                name: form.courseName.value,
+                instructor: form.courseInstructor.value,
+                duration: form.courseDuration.value,
+            };
+            mockData.courses.push(data);
+            setupDataListeners();
+            showMessage('Course added successfully!', 'success');
+            form.reset();
+        }
+
+        // --- LLM & Code Runner and TTS Handlers (Keep existing logic) ---
+        
+        // ... (Remaining LLM logic from previous response is omitted for brevity but included in the final file)
+
+        // The following functions are duplicates from the previous response and MUST be included in the final file:
+        // fetchWithBackoff, callGeminiTextApi, base64ToArrayBuffer, pcmToWav, writeString, toggleAuthMode, handleAuthSubmit, handleSignOut, runCode, handleCodeReview, handleSummarizeContent, handleTTS
+
+        /**
+         * Executes a fetch request with exponential backoff for resilience.
+         */
+        async function fetchWithBackoff(url, options, maxRetries = 5) {
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.status === 429 && i < maxRetries - 1) {
+                        const delay = Math.pow(2, i) * 1000 + Math.random() * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        continue;
+                    }
+                    if (!response.ok) {
+                        const errorBody = await response.text();
+                        console.error('API Error Body:', errorBody);
+                        throw new Error(`HTTP error! status: ${response.status} - ${errorBody.substring(0, 100)}...`);
+                    }
+                    return response;
+                } catch (error) {
+                    console.error(`Fetch attempt ${i + 1} failed:`, error);
+                    if (i === maxRetries - 1) throw error;
+                    const delay = Math.pow(2, i) * 1000 + Math.random() * 1000;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+        }
+
+        /**
+         * General function to call the Gemini API for text generation.
+         */
+        async function callGeminiTextApi(userQuery, systemPrompt, useGrounding = false) {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_TEXT_MODEL}:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                tools: useGrounding ? [{ "google_search": {} }] : undefined,
+            };
+
+            const options = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            };
+
+            try {
+                const response = await fetchWithBackoff(apiUrl, options);
+                const result = await response.json();
+                
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (!text) {
+                    console.error('Gemini API response missing text or content block:', result);
+                    return 'Error: Could not generate content. Please try again.';
+                }
+
+                return text;
+
+            } catch (error) {
+                console.error('Error calling Gemini Text API:', error);
+                return `Error: API call failed (${error.message}).`;
+            }
+        }
+
+        // Converts base64 to ArrayBuffer
+        function base64ToArrayBuffer(base64) {
+            const binaryString = atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        // Converts PCM audio to a WAV Blob
+        function pcmToWav(int16Array, sampleRate) {
+            const buffer = new ArrayBuffer(44 + int16Array.byteLength);
+            const view = new DataView(buffer);
+
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + int16Array.byteLength, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, 1, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true);
+            view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true);
+            writeString(view, 36, 'data');
+            view.setUint32(40, int16Array.byteLength, true);
+
+            let offset = 44;
+            for (let i = 0; i < int16Array.length; i++) {
+                view.setInt16(offset, int16Array[i], true);
+                offset += 2;
+            }
+
+            return new Blob([buffer], { type: 'audio/wav' });
+        }
+
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+        
+
+
+        function runCode() {
+            const code = editor.value;
+            const language = document.getElementById('languageSelect').value;
+            if (code.trim() === '') return showMessage('Please enter some code to run.', 'error');
+
+            output.textContent = '--- Output Start ---\n';
+
+            if (language === 'javascript') {
+                runJavaScript(code);
+            } else if (language === 'python') {
+                runPython(code);
+            }
+
+            output.textContent += '--- Output End ---\n';
+        }
+
+        function runJavaScript(code) {
+            const customConsole = {
+                log: (...args) => {
+                    const message = args.map(arg => {
+                        if (typeof arg === 'object' && arg !== null) {
+                            try {
+                                return JSON.stringify(arg, null, 2);
+                            } catch (e) {
+                                return String(arg);
+                            }
+                        }
+                        return String(arg);
+                    }).join(' ');
+                    output.textContent += message + '\n';
+                },
+                error: (message) => {
+                    output.textContent += `[ERROR] ${message}\n`;
+                },
+                clear: () => {
+                    output.textContent = '';
+                }
+            };
+
+            try {
+                const originalConsole = window.console;
+                window.console = customConsole;
+                new Function(code)();
+                window.console = originalConsole;
+            } catch (e) {
+                output.textContent += `\n[RUNTIME ERROR]:\n${e.message}`;
+                showMessage('Code execution failed. Check the output console for details.', 'error');
+            }
+        }
+
+        async function runPython(code) {
+            try {
+                if (typeof pyodide === 'undefined') {
+                    output.textContent += 'Loading Python environment...\n';
+                    await loadPyodide();
+                }
+                
+                pyodide.runPython(`
+import sys
+from io import StringIO
+
+# Capture stdout
+old_stdout = sys.stdout
+sys.stdout = captured_output = StringIO()
+
+try:
+${code.split('\n').map(line => '    ' + line).join('\n')}
+except Exception as e:
+    print(f"Error: {e}")
+finally:
+    sys.stdout = old_stdout
+                `);
+                
+                const result = pyodide.runPython('captured_output.getvalue()');
+                output.textContent += result || 'Code executed successfully (no output)';
+                
+            } catch (e) {
+                output.textContent += `\n[PYTHON ERROR]:\n${e.message}`;
+                showMessage('Python execution failed. Check the output console for details.', 'error');
+            }
+        }
+
+        async function loadPyodide() {
+            if (typeof pyodide !== 'undefined') return;
+            
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js';
+            document.head.appendChild(script);
+            
+            return new Promise((resolve, reject) => {
+                script.onload = async () => {
+                    try {
+                        window.pyodide = await loadPyodide({
+                            indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.24.1/full/'
+                        });
+                        resolve();
+                    } catch (e) {
+                        reject(e);
+                    }
+                };
+                script.onerror = reject;
+            });
+        }
+
+        async function handleCodeReview() {
+            const code = editor.value;
+            if (code.trim() === '') return showMessage('Please enter some code to review.', 'error');
+
+            reviewOutput.textContent = 'Analyzing code... 🧠 (This might take a moment)';
+            reviewCodeBtn.disabled = true;
+            
+            const systemPrompt = `You are an expert programming tutor focused on JavaScript. Analyze the provided code. Provide a response in three sections:
+1. **Explanation:** Briefly explain what the code does.
+2. **Review/Best Practices:** Provide 1-3 specific, actionable suggestions for improvement, efficiency, or better style (e.g., const/let usage, function purity, clarity).
+3. **Example Refactor:** Show a small, improved code snippet if applicable.
+Ensure your response is clearly formatted using markdown headings and code blocks.`;
+
+            const userQuery = `Review the following JavaScript code: \n\n\`\`\`javascript\n${code}\n\`\`\``;
+
+            try {
+                const responseText = await callGeminiTextApi(userQuery, systemPrompt);
+                reviewOutput.textContent = responseText;
+                
+            } catch (error) {
+                reviewOutput.textContent = 'An error occurred while fetching the review. Please check the console.';
+                console.error(error);
+            } finally {
+                reviewCodeBtn.disabled = false;
+            }
+        }
+
+        async function handleSummarizeContent() {
+            const notes = studyInput.value;
+            if (notes.trim().length < 50) return showMessage('Please enter at least 50 characters of text to summarize.', 'error');
+
+            summaryOutput.textContent = 'Generating summary and key points... 💡';
+            summarizeBtn.disabled = true;
+            ttsBtn.disabled = true;
+
+            const systemPrompt = `You are a concise academic assistant. Analyze the provided study material. Your task is to extract the core concepts and summarize them in a clear, brief, easy-to-digest paragraph, followed by 3-5 key takeaways formatted as a bulleted list. Do not include any introductory or concluding sentences outside of the summary content itself.`;
+
+            const userQuery = `Summarize the following study material:\n\n${notes}`;
+
+            try {
+                const responseText = await callGeminiTextApi(userQuery, systemPrompt);
+                summaryOutput.textContent = responseText;
+                showMessage('Summary generated successfully!', 'success');
+                ttsBtn.disabled = false; 
+                
+            } catch (error) {
+                summaryOutput.textContent = 'An error occurred while generating the summary. Please try again.';
+            } finally {
+                summarizeBtn.disabled = false;
+            }
+        }
+
+        async function handleTTS() {
+            const textToSpeak = summaryOutput.textContent.trim();
+            if (!textToSpeak || textToSpeak.includes('Generating summary') || textToSpeak.includes('appear here')) {
+                return showMessage('Please generate a valid summary first.', 'error');
+            }
+
+            ttsBtn.disabled = true;
+            const originalText = ttsBtn.innerHTML;
+            ttsBtn.innerHTML = '<i data-lucide="volume-2" class="w-5 h-5 mr-2 animate-pulse"></i> Generating Audio...';
+            lucide.createIcons();
+
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_TTS_MODEL}:generateContent?key=${apiKey}`;
+            const systemPrompt = `Say the following summary clearly and at a moderate pace, using an informative tone.`;
+
+            const payload = {
+                contents: [{ parts: [{ text: textToSpeak }] }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: {
+                            prebuiltVoiceConfig: { voiceName: "Charon" } 
+                        }
+                    }
+                },
+                model: GEMINI_TTS_MODEL,
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+            };
+
+            const options = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            };
+
+            try {
+                const response = await fetchWithBackoff(apiUrl, options);
+                const result = await response.json();
+                
+                const part = result?.candidates?.[0]?.content?.parts?.[0];
+                const audioData = part?.inlineData?.data;
+                const mimeType = part?.inlineData?.mimeType;
+
+                if (audioData && mimeType && mimeType.startsWith("audio/")) {
+                    const rateMatch = mimeType.match(/rate=(\d+)/);
+                    const sampleRate = rateMatch ? parseInt(rateMatch[1], 10) : 24000;
+                    
+                    const pcmData = base64ToArrayBuffer(audioData);
+                    const pcm16 = new Int16Array(pcmData);
+                    
+                    const wavBlob = pcmToWav(pcm16, sampleRate);
+                    
+                    if (audioPlayer) {
+                        audioPlayer.pause();
+                        audioPlayer.src = '';
+                    }
+
+                    const audioUrl = URL.createObjectURL(wavBlob);
+                    audioPlayer = new Audio(audioUrl);
+                    audioPlayer.play();
+                    showMessage('Playing audio summary...', 'success');
+
+                    ttsBtn.innerHTML = '<i data-lucide="volume-2" class="w-5 h-5 mr-2"></i> Playing...';
+                    lucide.createIcons();
+
+                    audioPlayer.onended = () => {
+                         ttsBtn.innerHTML = originalText;
+                         lucide.createIcons();
+                         ttsBtn.disabled = false;
+                         URL.revokeObjectURL(audioUrl); 
+                    };
+
+                } else {
+                    showMessage('Error: Failed to generate audio data.', 'error');
+                }
+
+            } catch (error) {
+                showMessage('TTS API call failed.', 'error');
+            } finally {
+                if (ttsBtn.disabled) {
+                    ttsBtn.innerHTML = originalText;
+                    lucide.createIcons();
+                    ttsBtn.disabled = false;
+                }
+            }
+        }
+
+        // --- Micro Learning URL Handlers ---
+        
+        function handleLoadUrl() {
+            const urlSelect = document.getElementById('urlSelect');
+            const webFrame = document.getElementById('webFrame');
+            const urlDisplaySection = document.getElementById('urlDisplaySection');
+            const currentUrl = document.getElementById('currentUrl');
+            
+            const url = urlSelect.value;
+            
+            if (!url) {
+                showMessage('Please select a learning resource', 'error');
+                return;
+            }
+            
+            // Load URL in iframe
+            webFrame.src = url;
+            currentUrl.textContent = url;
+            urlDisplaySection.classList.remove('hidden');
+            
+            showMessage('Loading web content...', 'success');
+        }
+        
+        function handleOpenInNewTab() {
+            const currentUrl = document.getElementById('currentUrl').textContent;
+            if (currentUrl) {
+                window.open(currentUrl, '_blank');
+            }
+        }
+
+        // --- Initialization on Load ---
+
+        window.onload = function () {
+            initializeApp();
+            lucide.createIcons();
+
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const viewId = item.getAttribute('data-view');
+                    if (viewId) {
+                        switchView(viewId);
+                    }
+                });
+            });
+            
+            // Home Page navigation handler
+            document.getElementById('homePageNav').addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = 'learning-home.html';
+            });
+
+            menuToggle.addEventListener('click', () => {
+                menuList.classList.toggle('hidden');
+            });
+            
+            // Admin Tabs
+            adminTabs.forEach(tab => {
+                tab.addEventListener('click', handleAdminTabClick);
+            });
+
+            // Admin Form Handlers
+            document.getElementById('addSessionForm').addEventListener('submit', handleAddSession);
+            document.getElementById('addMaterialForm').addEventListener('submit', handleAddMaterial);
+            document.getElementById('addRecordingForm').addEventListener('submit', handleAddRecording);
+            document.getElementById('addAssessmentForm').addEventListener('submit', handleAddAssessment);
+            document.getElementById('addAttendanceForm').addEventListener('submit', handleAddAttendance);
+            document.getElementById('addCertificationForm').addEventListener('submit', handleAddCertification);
+            document.getElementById('addCourseForm').addEventListener('submit', handleAddCourse);
+
+            // AI/Code Runner Handlers
+            document.getElementById('runCodeBtn').addEventListener('click', runCode);
+            document.getElementById('reviewCodeBtn').addEventListener('click', handleCodeReview);
+            document.getElementById('summarizeBtn').addEventListener('click', handleSummarizeContent);
+            document.getElementById('ttsBtn').addEventListener('click', handleTTS);
+            
+            // Micro Learning URL Handlers
+            document.getElementById('loadUrlBtn').addEventListener('click', handleLoadUrl);
+            document.getElementById('openInNewTab').addEventListener('click', handleOpenInNewTab);
+            document.getElementById('urlSelect').addEventListener('change', function() {
+                if (this.value) {
+                    handleLoadUrl();
+                }
+            });
+            
+            // Language selector handler
+            document.getElementById('languageSelect').addEventListener('change', function() {
+                const editor = document.getElementById('editor');
+                if (this.value === 'python') {
+                    editor.placeholder = '# Write your Python code here...\nprint("Hello, World!")\n\n# Example:\nfor i in range(5):\n    print(f"Count: {i}")';
+                    editor.value = 'print("Hello, World from Python!")\n\n# You can write any Python code here to test it.\n\ndef calculate_bmi(weight_kg, height_m):\n    return weight_kg / (height_m ** 2)\n\nbmi = calculate_bmi(70, 1.75)\nprint(f"Your BMI is: {bmi:.2f}")';
+                } else {
+                    editor.placeholder = '// Write your JavaScript code here...\nfunction greet(name) {\n    console.log(\'Hello, \' + name + \'!\');\n}\n\ngreet(\'World\');';
+                    editor.value = 'console.log(\'Hello, World from Rural-IT-Hub!\');\n// You can write any JavaScript code here to test it.\n\nfunction calculateBMI(weightKg, heightM) {\n  return weightKg / (heightM * heightM);\n}\n\nlet bmi = calculateBMI(70, 1.75);\nconsole.log(\'Your BMI is:\', bmi.toFixed(2));';
+                }
+            });
+        };
+        
+    </script>
+</body>
+</html>
