@@ -101,7 +101,6 @@
                 <li class="nav-item" data-view="attendanceView"><a href="#" class="flex items-center p-3 rounded-xl hover:bg-indigo-600 transition duration-150"><i data-lucide="clipboard-list" class="w-5 h-5 mr-3"></i>Attendance</a></li>
                 <li class="nav-item" data-view="assessmentsView"><a href="#" class="flex items-center p-3 rounded-xl hover:bg-indigo-600 transition duration-150"><i data-lucide="graduation-cap" class="w-5 h-5 mr-3"></i>Assessments</a></li>
                 <li class="nav-item" data-view="certificationView"><a href="#" class="flex items-center p-3 rounded-xl hover:bg-indigo-600 transition duration-150"><i data-lucide="award" class="w-5 h-5 mr-3"></i>Certifications</a></li>
-                <li class="nav-item" data-view="coursesView"><a href="#" class="flex items-center p-3 rounded-xl hover:bg-indigo-600 transition duration-150"><i data-lucide="book" class="w-5 h-5 mr-3"></i>Courses</a></li>
                 <li class="nav-item" data-view="codeRunnerView"><a href="#" class="flex items-center p-3 rounded-xl hover:bg-indigo-600 transition duration-150 bg-indigo-700 font-semibold mt-4"><i data-lucide="terminal" class="w-5 h-5 mr-3"></i>Run My Code</a></li>
                 <li class="nav-item" data-view="microlearningView"><a href="#" class="flex items-center p-3 rounded-xl hover:bg-indigo-600 transition duration-150 bg-indigo-700 font-semibold mt-4"><i data-lucide="terminal" class="w-5 h-5 mr-3"></i>Micro Learning</a></li>
                 
@@ -135,16 +134,9 @@
                     <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100"><div class="flex items-center space-x-4"><i data-lucide="award" class="w-8 h-8 text-indigo-400"></i><div><p class="text-sm text-gray-500">Certifications</p><p class="text-2xl font-semibold text-gray-800">1 / 3</p></div></div></div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="bg-white p-6 rounded-2xl shadow-xl border border-gray-100">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center"><i data-lucide="zap" class="w-5 h-5 text-primary mr-2"></i>Next Session</h3>
-                        <div id="nextSessionDisplay">Loading next session...</div>
-                    </div>
-                    
-                    <div class="bg-white p-6 rounded-2xl shadow-xl border border-gray-100">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center"><i data-lucide="book" class="w-5 h-5 text-secondary mr-2"></i>Available Courses</h3>
-                        <div id="dashboardCourseList" class="space-y-3">Loading courses...</div>
-                    </div>
+                <div class="bg-white p-6 rounded-2xl shadow-xl border border-gray-100">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center"><i data-lucide="zap" class="w-5 h-5 text-primary mr-2"></i>Next Session</h3>
+                    <div id="nextSessionDisplay">Loading next session...</div>
                 </div>
             </section>
 
@@ -246,15 +238,6 @@
                 </div>
             </section>
 
-            <!-- 7.1. Courses View (Dynamic) -->
-            <section id="coursesView" class="view hidden">
-                <h2 class="text-3xl font-bold text-gray-800 mb-6">Available Courses</h2>
-                <div id="course-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Course data will be dynamically rendered here -->
-                    <p class="text-gray-500 col-span-full">Loading courses...</p>
-                </div>
-            </section>
-
             <!-- 8. Code Runner View (AI Feature) -->
             <section id="codeRunnerView" class="view hidden">
                 <h2 class="text-3xl font-bold text-gray-800 mb-6">Run My Code Sandbox</h2>
@@ -306,9 +289,9 @@ console.log('Your BMI is:', bmi.toFixed(2));</textarea>
                         <button class="admin-tab p-3 text-sm md:text-base font-medium text-gray-500 hover:text-primary border-b-2 border-transparent hover:border-primary mr-4 transition" data-target="manageMaterials">Materials</button>
                         <button class="admin-tab p-3 text-sm md:text-base font-medium text-gray-500 hover:text-primary border-b-2 border-transparent hover:border-primary mr-4 transition" data-target="manageRecordings">Recordings</button>
                         <button class="admin-tab p-3 text-sm md:text-base font-medium text-gray-500 hover:text-primary border-b-2 border-transparent hover:border-primary mr-4 transition" data-target="manageAssessments">Assessments</button>
+                        <button class="admin-tab p-3 text-sm md:text-base font-medium text-gray-500 hover:text-primary border-b-2 border-transparent hover:border-primary mr-4 transition" data-target="manageSubmissions">Submissions</button>
                         <button class="admin-tab p-3 text-sm md:text-base font-medium text-gray-500 hover:text-primary border-b-2 border-transparent hover:border-primary mr-4 transition" data-target="manageAttendance">Attendance</button>
-                        <button class="admin-tab p-3 text-sm md:text-base font-medium text-gray-500 hover:text-primary border-b-2 border-transparent hover:border-primary mr-4 transition" data-target="manageCertifications">Certifications</button>
-                        <button class="admin-tab p-3 text-sm md:text-base font-medium text-gray-500 hover:text-primary border-b-2 border-transparent hover:border-primary transition" data-target="manageCourses">Courses</button>
+                        <button class="admin-tab p-3 text-sm md:text-base font-medium text-gray-500 hover:text-primary border-b-2 border-transparent hover:border-primary transition" data-target="manageCertifications">Certifications</button>
                     </div>
                     
                     <!-- Admin Tab Content -->
@@ -353,11 +336,12 @@ console.log('Your BMI is:', bmi.toFixed(2));</textarea>
                         <!-- Manage Recordings -->
                         <div id="manageRecordings" class="admin-tab-content hidden">
                             <h3 class="text-xl font-semibold mb-4 text-primary">Add New Recording</h3>
-                            <form id="addRecordingForm" class="admin-form grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <form id="addRecordingForm" class="admin-form grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <input type="text" id="recordingTitle" placeholder="Recording Title (e.g., Lecture 7: CSS Grid)" required>
                                 <input type="date" id="recordingDate" required>
                                 <input type="text" id="recordingDuration" placeholder="Duration (e.g., 1h 15m)" required>
-                                <button type="submit" class="md:col-span-3 bg-primary text-white p-3 rounded-xl hover:bg-indigo-600 transition font-semibold flex items-center justify-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Add Recording</button>
+                                <input type="url" id="recordingUrl" placeholder="Recording URL (e.g., https://example.com/recording)" required>
+                                <button type="submit" class="md:col-span-2 bg-primary text-white p-3 rounded-xl hover:bg-indigo-600 transition font-semibold flex items-center justify-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Add Recording</button>
                             </form>
 
                             <h3 class="text-xl font-semibold mt-8 mb-4 text-gray-800 border-t pt-4">Current Recordings</h3>
@@ -367,15 +351,25 @@ console.log('Your BMI is:', bmi.toFixed(2));</textarea>
                         <!-- Manage Assessments -->
                         <div id="manageAssessments" class="admin-tab-content hidden">
                             <h3 class="text-xl font-semibold mb-4 text-primary">Add New Assessment</h3>
-                            <form id="addAssessmentForm" class="admin-form grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <form id="addAssessmentForm" class="admin-form grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <input type="text" id="assessmentName" placeholder="Assessment Name (e.g., Quiz 2: Git)" required>
                                 <input type="text" id="assessmentType" placeholder="Type (e.g., Quiz, Project)" required>
                                 <input type="date" id="assessmentDueDate" required>
-                                <button type="submit" class="md:col-span-3 bg-primary text-white p-3 rounded-xl hover:bg-indigo-600 transition font-semibold flex items-center justify-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Add Assessment</button>
+                                <input type="url" id="assessmentGithubUrl" placeholder="GitHub Repository URL (optional)">
+                                <input type="url" id="assessmentDocumentUrl" placeholder="Problem Statement Document URL (optional)">
+                                <button type="submit" class="md:col-span-2 bg-primary text-white p-3 rounded-xl hover:bg-indigo-600 transition font-semibold flex items-center justify-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Add Assessment</button>
                             </form>
 
                             <h3 class="text-xl font-semibold mt-8 mb-4 text-gray-800 border-t pt-4">Current Assessments</h3>
                             <div id="adminAssessmentList" class="space-y-4"></div>
+                        </div>
+                        
+                        <!-- Manage Submissions -->
+                        <div id="manageSubmissions" class="admin-tab-content hidden">
+                            <h3 class="text-xl font-semibold mb-4 text-primary flex items-center"><i data-lucide="inbox" class="w-5 h-5 mr-2"></i>Student Submissions</h3>
+                            <div id="adminSubmissionList" class="space-y-4">
+                                <p class="text-gray-500">No submissions yet.</p>
+                            </div>
                         </div>
                         
                         <!-- Manage Attendance -->
@@ -410,20 +404,6 @@ console.log('Your BMI is:', bmi.toFixed(2));</textarea>
 
                             <h3 class="text-xl font-semibold mt-8 mb-4 text-gray-800 border-t pt-4">Current Certifications</h3>
                             <div id="adminCertificationList" class="space-y-4"></div>
-                        </div>
-
-                        <!-- Manage Courses -->
-                        <div id="manageCourses" class="admin-tab-content hidden">
-                            <h3 class="text-xl font-semibold mb-4 text-primary">Add New Course</h3>
-                            <form id="addCourseForm" class="admin-form grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <input type="text" id="courseName" placeholder="Course Name" required>
-                                <input type="text" id="courseInstructor" placeholder="Instructor" required>
-                                <input type="text" id="courseDuration" placeholder="Duration (e.g., 8 weeks)" required>
-                                <button type="submit" class="md:col-span-3 bg-primary text-white p-3 rounded-xl hover:bg-indigo-600 transition font-semibold flex items-center justify-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Add Course</button>
-                            </form>
-
-                            <h3 class="text-xl font-semibold mt-8 mb-4 text-gray-800 border-t pt-4">Current Courses</h3>
-                            <div id="adminCourseList" class="space-y-4"></div>
                         </div>
 
                     </div>
@@ -493,7 +473,7 @@ console.log('Your BMI is:', bmi.toFixed(2));</textarea>
             assessments: [],
             certifications: [],
             attendance: [],
-            courses: []
+            submissions: []
         };
 
         // --- UI Elements ---
@@ -532,10 +512,6 @@ console.log('Your BMI is:', bmi.toFixed(2));</textarea>
 
         const adminCertificationList = document.getElementById('adminCertificationList');
         const certificationList = document.getElementById('certification-list');
-
-        const adminCourseList = document.getElementById('adminCourseList');
-        const courseList = document.getElementById('course-list');
-        const dashboardCourseList = document.getElementById('dashboardCourseList');
 
         const adminAttendanceList = document.getElementById('adminAttendanceList');
 
@@ -798,24 +774,41 @@ console.log('Your BMI is:', bmi.toFixed(2));</textarea>
 
             docs.forEach(assessment => {
                 const dueDate = new Date(assessment.dueDate).toLocaleDateString();
-                // Mock result/status for client view
-                const isPending = Math.random() < 0.5;
-                const resultText = isPending ? 'Pending' : '95%';
-                const resultColor = isPending ? 'text-red-600' : 'text-secondary';
-                const buttonText = isPending ? 'Start Submission' : 'View Feedback';
-                const buttonColor = isPending ? 'bg-red-500' : 'text-primary border border-primary';
-                const hoverColor = isPending ? 'hover:bg-red-600' : 'hover:bg-primary hover:text-white';
                 
-                // Client View HTML
+                // Build assignment links HTML
+                let linksHtml = '';
+                if (assessment.githubUrl) {
+                    linksHtml += `<a href="${assessment.githubUrl}" target="_blank" class="inline-flex items-center text-blue-600 hover:text-blue-800 mr-4"><i data-lucide="github" class="w-4 h-4 mr-1"></i>View GitHub</a>`;
+                }
+                if (assessment.documentUrl) {
+                    linksHtml += `<a href="${assessment.documentUrl}" target="_blank" class="inline-flex items-center text-green-600 hover:text-green-800 mr-4"><i data-lucide="file-text" class="w-4 h-4 mr-1"></i>View Assignment</a>`;
+                }
+                
+                // Client View HTML with submission form
                 assessmentList.innerHTML += `
-                    <div class="bg-white p-6 rounded-2xl shadow-md flex justify-between items-center">
-                        <div>
+                    <div class="bg-white p-6 rounded-2xl shadow-md">
+                        <div class="mb-4">
                             <p class="text-xl font-semibold text-gray-800">${assessment.name} (${assessment.type})</p>
                             <p class="text-sm text-gray-500 mt-1">Due: ${dueDate}</p>
                         </div>
-                        <div class="text-right">
-                            <p class="text-3xl font-bold ${resultColor}">${resultText}</p>
-                            <button class="mt-2 ${buttonColor} text-white px-4 py-2 rounded-xl ${hoverColor} transition">${buttonText}</button>
+                        
+                        ${linksHtml ? `<div class="mb-4 pb-4 border-b">${linksHtml}</div>` : ''}
+                        
+                        <div class="bg-gray-50 p-4 rounded-xl" id="submission-${assessment.id}">
+                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center"><i data-lucide="upload" class="w-4 h-4 mr-2"></i>Submit Your Answer</h4>
+                            <form class="space-y-3" onsubmit="handleAssignmentSubmission(event, '${assessment.id}')">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Upload Files (ZIP/PDF)</label>
+                                    <input type="file" accept=".zip,.pdf" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Google Colab Link</label>
+                                    <input type="url" placeholder="https://colab.research.google.com/..." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                                </div>
+                                <button type="submit" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-indigo-600 transition flex items-center justify-center">
+                                    <i data-lucide="send" class="w-4 h-4 mr-2"></i>Submit Assignment
+                                </button>
+                            </form>
                         </div>
                     </div>
                 `;
@@ -826,6 +819,8 @@ console.log('Your BMI is:', bmi.toFixed(2));</textarea>
                         <div>
                             <p class="font-semibold text-gray-800">${assessment.name} (${assessment.type})</p>
                             <p class="text-sm text-gray-600">Due Date: ${dueDate}</p>
+                            ${assessment.githubUrl ? `<a href="${assessment.githubUrl}" target="_blank" class="text-xs text-blue-500 hover:underline block">GitHub: ${assessment.githubUrl.substring(0, 30)}...</a>` : ''}
+                            ${assessment.documentUrl ? `<a href="${assessment.documentUrl}" target="_blank" class="text-xs text-green-500 hover:underline block">Document: ${assessment.documentUrl.substring(0, 30)}...</a>` : ''}
                         </div>
                         <button onclick="deleteDocument('assessments', '${assessment.id}')" class="text-red-500 hover:text-red-700 p-2 rounded-full transition">
                             <i data-lucide="trash-2" class="w-5 h-5"></i>
@@ -915,55 +910,34 @@ console.log('Your BMI is:', bmi.toFixed(2));</textarea>
             });
             lucide.createIcons();
         }
-
-        function renderCourses(docs) {
-            courseList.innerHTML = '';
-            adminCourseList.innerHTML = '';
-            dashboardCourseList.innerHTML = '';
+        
+        function renderSubmissions(docs) {
+            const adminSubmissionList = document.getElementById('adminSubmissionList');
+            adminSubmissionList.innerHTML = '';
 
             if (docs.length === 0) {
-                courseList.innerHTML = '<p class="text-gray-500 col-span-full">No courses available yet.</p>';
-                dashboardCourseList.innerHTML = '<p class="text-gray-500">No courses available yet.</p>';
+                adminSubmissionList.innerHTML = '<p class="text-gray-500">No submissions yet.</p>';
                 return;
             }
 
-            docs.forEach(course => {
-                // Client View HTML
-                courseList.innerHTML += `
-                    <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
-                        <div class="flex items-center space-x-3 mb-4">
-                            <i data-lucide="book" class="w-8 h-8 text-primary"></i>
+            docs.forEach(submission => {
+                const submittedDate = new Date(submission.submittedAt).toLocaleDateString();
+                const submittedTime = new Date(submission.submittedAt).toLocaleTimeString();
+                
+                adminSubmissionList.innerHTML += `
+                    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-3">
                             <div>
-                                <h3 class="text-lg font-semibold text-gray-800">${course.name}</h3>
-                                <p class="text-sm text-gray-500">by ${course.instructor}</p>
+                                <h4 class="font-semibold text-gray-800">${submission.assessmentName}</h4>
+                                <p class="text-sm text-gray-600">Student: ${submission.studentName}</p>
+                                <p class="text-xs text-gray-500">Submitted: ${submittedDate} at ${submittedTime}</p>
                             </div>
+                            <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">${submission.status}</span>
                         </div>
-                        <p class="text-gray-600 mb-4">Duration: ${course.duration}</p>
-                        <button class="w-full bg-primary text-white py-2 rounded-xl hover:bg-indigo-600 transition">Enroll Now</button>
-                    </div>
-                `;
-
-                // Dashboard View HTML (compact)
-                dashboardCourseList.innerHTML += `
-                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div>
-                            <p class="font-medium text-gray-800">${course.name}</p>
-                            <p class="text-sm text-gray-500">${course.instructor} • ${course.duration}</p>
+                        <div class="space-y-2">
+                            ${submission.fileName ? `<div class="flex items-center text-sm text-blue-600"><i data-lucide="file" class="w-4 h-4 mr-2"></i>File: ${submission.fileName}</div>` : ''}
+                            ${submission.colabLink ? `<div class="flex items-center text-sm text-green-600"><i data-lucide="external-link" class="w-4 h-4 mr-2"></i><a href="${submission.colabLink}" target="_blank" class="hover:underline">View Colab</a></div>` : ''}
                         </div>
-                        <button class="text-primary hover:text-indigo-600 font-semibold text-sm">View</button>
-                    </div>
-                `;
-
-                // Admin View HTML
-                adminCourseList.innerHTML += `
-                    <div class="bg-gray-50 p-4 rounded-xl flex justify-between items-center border border-gray-200">
-                        <div>
-                            <p class="font-semibold text-gray-800">${course.name}</p>
-                            <p class="text-sm text-gray-600">Instructor: ${course.instructor} | Duration: ${course.duration}</p>
-                        </div>
-                        <button onclick="deleteDocument('courses', '${course.id}')" class="text-red-500 hover:text-red-700 p-2 rounded-full transition">
-                            <i data-lucide="trash-2" class="w-5 h-5"></i>
-                        </button>
                     </div>
                 `;
             });
@@ -979,8 +953,8 @@ console.log('Your BMI is:', bmi.toFixed(2));</textarea>
             renderRecordings(mockData.recordings);
             renderAssessments(mockData.assessments);
             renderCertifications(mockData.certifications);
-            renderCourses(mockData.courses);
             renderAttendance(mockData.attendance);
+            renderSubmissions(mockData.submissions);
         }
 
         // --- Mock Data CRUD Handlers ---
@@ -1048,6 +1022,8 @@ console.log('Your BMI is:', bmi.toFixed(2));</textarea>
                 name: form.assessmentName.value,
                 type: form.assessmentType.value,
                 dueDate: form.assessmentDueDate.value,
+                githubUrl: form.assessmentGithubUrl.value,
+                documentUrl: form.assessmentDocumentUrl.value,
             };
             mockData.assessments.push(data);
             setupDataListeners();
@@ -1083,21 +1059,6 @@ console.log('Your BMI is:', bmi.toFixed(2));</textarea>
             mockData.certifications.push(data);
             setupDataListeners();
             showMessage('Certification added successfully!', 'success');
-            form.reset();
-        }
-
-        function handleAddCourse(e) {
-            e.preventDefault();
-            const form = e.target;
-            const data = {
-                id: generateId(),
-                name: form.courseName.value,
-                instructor: form.courseInstructor.value,
-                duration: form.courseDuration.value,
-            };
-            mockData.courses.push(data);
-            setupDataListeners();
-            showMessage('Course added successfully!', 'success');
             form.reset();
         }
 
@@ -1461,6 +1422,60 @@ Ensure your response is clearly formatted using markdown headings and code block
             }
         }
 
+        // --- Assignment Submission Handler ---
+        
+        function handleAssignmentSubmission(event, assessmentId) {
+            event.preventDefault();
+            const form = event.target;
+            const fileInput = form.querySelector('input[type="file"]');
+            const colabInput = form.querySelector('input[type="url"]');
+            
+            // Check if at least one submission method is provided
+            if (!fileInput.files.length && !colabInput.value.trim()) {
+                showMessage('Please upload a file or provide a Google Colab link', 'error');
+                return;
+            }
+            
+            // Find assessment name
+            const assessment = mockData.assessments.find(a => a.id === assessmentId);
+            const assessmentName = assessment ? assessment.name : 'Unknown Assessment';
+            
+            // Store submission data
+            const submission = {
+                id: generateId(),
+                assessmentId: assessmentId,
+                assessmentName: assessmentName,
+                studentName: 'Current Student',
+                fileName: fileInput.files.length ? fileInput.files[0].name : null,
+                colabLink: colabInput.value.trim() || null,
+                submittedAt: new Date().toISOString(),
+                status: 'Submitted'
+            };
+            
+            mockData.submissions.push(submission);
+            renderSubmissions(mockData.submissions);
+            
+            // Replace submission form with completion status
+            const submissionDiv = document.getElementById(`submission-${assessmentId}`);
+            submissionDiv.innerHTML = `
+                <div class="bg-green-50 p-4 rounded-xl border border-green-200">
+                    <div class="flex items-center mb-2">
+                        <i data-lucide="check-circle" class="w-5 h-5 text-green-600 mr-2"></i>
+                        <h4 class="font-semibold text-green-800">Assignment Submitted Successfully!</h4>
+                    </div>
+                    <p class="text-green-700 text-sm mb-2">Your assessment result will be announced soon.</p>
+                    <div class="flex items-center">
+                        <span class="text-xs font-medium text-green-800 bg-green-100 px-2 py-1 rounded-full">
+                            Status: Completed
+                        </span>
+                    </div>
+                </div>
+            `;
+            
+            lucide.createIcons();
+            showMessage('Assignment submitted successfully! Results will be announced soon.', 'success');
+        }
+        
         // --- Micro Learning URL Handlers ---
         
         function handleLoadUrl() {
@@ -1529,7 +1544,6 @@ Ensure your response is clearly formatted using markdown headings and code block
             document.getElementById('addAssessmentForm').addEventListener('submit', handleAddAssessment);
             document.getElementById('addAttendanceForm').addEventListener('submit', handleAddAttendance);
             document.getElementById('addCertificationForm').addEventListener('submit', handleAddCertification);
-            document.getElementById('addCourseForm').addEventListener('submit', handleAddCourse);
 
             // AI/Code Runner Handlers
             document.getElementById('runCodeBtn').addEventListener('click', runCode);
